@@ -36,9 +36,7 @@ class CalenderWidget extends StatelessWidget {
         true,
       )
     ];
-    final DateTime today = DateTime.now();
-    final DateTime startTime = DateTime(today.year, today.month, today.day, 9);
-    final DateTime endTime = startTime.add(const Duration(hours: 2));
+
     return meetings;
   }
 }

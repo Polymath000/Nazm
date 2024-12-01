@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gif_view/gif_view.dart';
 import 'package:to_do/Features/Auth/presentation/views/log_in_view.dart';
 import 'package:to_do/Features/onboarding/data/models/onboarding_model.dart';
 import 'package:to_do/Features/onboarding/presentation/views/Widgets/build_dot.dart';
@@ -53,7 +52,6 @@ class _onboardingState extends State<onboarding> {
                         width: MediaQuery.sizeOf(context).width,
                         padding: const EdgeInsets.only(top: 100),
                         child: Image.asset(OnboardingList[i].imageUrl),
-
                         // GifView.asset(
                         //   OnboardingList[i].imageUrl,
                         // ),
