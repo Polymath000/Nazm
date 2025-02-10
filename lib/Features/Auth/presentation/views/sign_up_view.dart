@@ -25,140 +25,158 @@ class _SignUpViewState extends State<SignUpView> {
   String? confirmPassword;
   String? userName;
   bool isLoading = false;
-  GlobalKey<FormState> formKey = GlobalKey();
+  final GlobalKey<FormState> formKey = GlobalKey();
+  // AutovalidateMode autoValidate = AutovalidateMode.always;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignupCubit(),
-      child: Scaffold(
-        body: BlocConsumer<SignupCubit, SignupState>(
-          listener: (context, state) {
-            if (state is SignupSuccess) {
-              isLoading = false;
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeView(),
-                  ));
-              ShowSnakBar(context, "I hope you enjoy our app.");
-            } else if (state is SignupFailure) {
-              isLoading = false;
-              ShowSnakBar(context, state.errorMessage);
-            } else if (state is SignupLoading) {
-              isLoading = true;
-            } else {
-              isLoading = false;
-              ShowSnakBar(
-                  context, "There was an error ,please try again later");
-            }
-          },
-          builder: (context, state) {
-            return ModalProgressHUD(
-              blur: 0.6,
-              dismissible: false,
-              inAsyncCall: isLoading,
-              progressIndicator: SizedBox(
-                width: MediaQuery.sizeOf(context).width / 1.6,
-                child: const LoadingIndicator(
-                  indicatorType: Indicator.pacman,
-                  colors: kPrimaryLoading,
-                ),
+      child: Stack(children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                'assets/images/back4.jpeg',
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: formKey,
-                    child: ListBody(
-                      children: [
-                        const SizedBox(
-                          height: 120,
-                        ),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image(image: AssetImage(kLargeLogo)),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        CustomTextField(
-                          // TODO : add username to database
-                          hintText: 'Full Name',
-
-                          onChanged: (String Name) {
-                            userName = Name;
-                          },
-                        ),
-                        CustomTextField(
-                          hintText: 'Email Address',
-                          onChanged: (String Email) {
-                            email = Email;
-                          },
-                        ),
-                        PasswordTextField(
-                          hintText: 'Password',
-                          onChanged: (String Password) {
-                            password = Password;
-                          },
-                        ),
-                        PasswordTextField(
-                          hintText: 'Confirm Password',
-                          onChanged: (String Confirm_Password) {
-                            confirmPassword = Confirm_Password;
-                          },
-                        ),
-                        MainCustomButtom(
-                          text: 'Sign Up',
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              BlocProvider.of<SignupCubit>(context)
-                                  .createNewUser(
-                                email: email!,
-                                password: password!,
-                                userName: userName!,
-                                confirmPassword: confirmPassword!,
-                              );
-                            }
-                            isLoading = false;
-                            setState(() {});
-                          },
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'Already have an account? ',
-                              style: TextStyle(color: Color(0xff8f96a0)),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                'Log in',
-                                style: TextStyle(color: Colors.blue),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          body: BlocConsumer<SignupCubit, SignupState>(
+            listener: (context, state) {
+              if (state is SignupSuccess) {
+                isLoading = false;
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeView(),
+                    ));
+                ShowSnakBar(context, "I hope you enjoy our app.");
+              } else if (state is SignupFailure) {
+                isLoading = false;
+                ShowSnakBar(context, state.errorMessage);
+              } else if (state is SignupLoading) {
+                isLoading = true;
+              } else {
+                isLoading = false;
+                ShowSnakBar(
+                    context, "There was an error ,please try again later");
+              }
+            },
+            builder: (context, state) {
+              return ModalProgressHUD(
+                blur: 0.6,
+                dismissible: false,
+                inAsyncCall: isLoading,
+                progressIndicator: SizedBox(
+                  width: MediaQuery.sizeOf(context).width / 1.6,
+                  child: const LoadingIndicator(
+                    indicatorType: Indicator.pacman,
+                    colors: kPrimaryLoading,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SingleChildScrollView(
+                    child: Form(
+                      // autovalidateMode: autoValidate,
+                      key: formKey,
+                      child: ListBody(
+                        children: [
+                          const SizedBox(
+                            height: 120,
+                          ),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image(
+                                image: AssetImage(kLargeLogo),
+                                height: 180,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 70,
-                        ),
-                      ],
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          CustomTextField(
+                            // TODO : add username to database
+                            hintText: 'Full Name',
+
+                            onChanged: (String Name) {
+                              userName = Name;
+                            },
+                          ),
+                          CustomTextField(
+                            hintText: 'Email Address',
+                            onChanged: (String Email) {
+                              email = Email;
+                            },
+                          ),
+                          PasswordTextField(
+                            hintText: 'Password',
+                            onChanged: (String Password) {
+                              password = Password;
+                            },
+                          ),
+                          PasswordTextField(
+                            hintText: 'Confirm Password',
+                            onChanged: (String Confirm_Password) {
+                              confirmPassword = Confirm_Password;
+                            },
+                          ),
+                          MainCustomButtom(
+                            text: 'Sign Up',
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                BlocProvider.of<SignupCubit>(context)
+                                    .createNewUser(
+                                  email: email!,
+                                  password: password!,
+                                  userName: userName!,
+                                  confirmPassword: confirmPassword!,
+                                );
+                              }
+                              isLoading = false;
+                              setState(() {});
+                            },
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Already have an account? ',
+                                style: TextStyle(color: Colors.black87),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  'Log in',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 70,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-      ),
+      ]),
     );
   }
 }

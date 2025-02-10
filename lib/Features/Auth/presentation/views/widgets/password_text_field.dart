@@ -18,6 +18,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: TextFormField(
+        style: TextStyle(color: Colors.black),
         validator: (value) {
           if (value!.isEmpty) {
             return 'Please enter your password';
@@ -27,41 +28,48 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         onChanged: widget.onChanged,
         obscureText: !isShow,
         decoration: InputDecoration(
-            suffixIcon: IconButton(
-              onPressed: () {
-                setState(() {
-                  isShow ? isShow = false : isShow = true;
-                });
-              },
-              icon: Icon(
-                  isShow ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash),
-            ), // remove_red_eye_sharp
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 166, 171, 174),
-              ),
-              borderRadius: BorderRadius.circular(10),
+          helperStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+          hintText: '**************',
+          labelStyle: TextStyle(color: Colors.black),
+          floatingLabelStyle: TextStyle(color: Colors.black),
+          suffixIcon: IconButton(
+            onPressed: () {
+              setState(() {
+                isShow ? isShow = false : isShow = true;
+              });
+            },
+            icon: Icon(
+              isShow ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
+              color: Colors.black,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 2, 61, 119),
-              ),
-              borderRadius: BorderRadius.circular(10),
+          ), // remove_red_eye_sharp
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 84, 96, 104),
             ),
-            errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.red),
-              borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 2, 61, 119),
             ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 123, 77, 77),
-              ),
-              borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.red),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 123, 77, 77),
             ),
-            labelText: widget.hintText,
-            hintStyle: const TextStyle(
-              color: Color(0xff8f96a0),
-            )),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          labelText: widget.hintText,
+          hintStyle: const TextStyle(
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+        ),
       ),
     );
   }

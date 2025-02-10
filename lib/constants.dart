@@ -10,3 +10,13 @@ const List<Color> kPrimaryLoading = [
   Colors.black,
   Colors.white,
 ];
+List<Color> Kcolors = [
+  const Color(0xff016453),
+  const Color(0xff379634),
+  const Color(0xff0A3200),
+  const Color(0xff7B9E89),
+  const Color(0xff183380),
+  const Color(0xffD95D39),
+  const Color(0xffF18805),
+  const Color(0xffF0A202),
+];

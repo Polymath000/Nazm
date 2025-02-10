@@ -52,9 +52,6 @@ class _onboardingState extends State<onboarding> {
                         width: MediaQuery.sizeOf(context).width,
                         padding: const EdgeInsets.only(top: 100),
                         child: Image.asset(OnboardingList[i].imageUrl),
-                        // GifView.asset(
-                        //   OnboardingList[i].imageUrl,
-                        // ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(70.0),

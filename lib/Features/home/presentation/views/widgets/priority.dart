@@ -12,40 +12,38 @@ class _PriorityState extends State<Priority> {
   Color color = Colors.grey;
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          customButton: Icon(
-            Icons.flag_outlined,
-            color: color,
-          ),
-          items: [
-            ...MenuItems.firstItems.map(
-              (item) => DropdownMenuItem<MenuItem>(
-                value: item,
-                child: MenuItems.buildItem(item),
-              ),
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        customButton: Icon(
+          Icons.flag_outlined,
+          color: color,
+        ),
+        items: [
+          ...MenuItems.firstItems.map(
+            (item) => DropdownMenuItem<MenuItem>(
+              value: item,
+              child: MenuItems.buildItem(item),
             ),
-          ],
-          onChanged: (value) {
-            setState(() {
-              color = MenuItems.onChanged(context, value!);
-            });
-          },
-          dropdownStyleData: DropdownStyleData(
-            width: 160,
-            direction: DropdownDirection.left,
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Colors.black,
-            ),
-            offset: const Offset(0, 8),
           ),
-          menuItemStyleData: MenuItemStyleData(
-            customHeights: List<double>.filled(MenuItems.firstItems.length, 48),
-            padding: const EdgeInsets.only(left: 16, right: 16),
+        ],
+        onChanged: (value) {
+          setState(() {
+            color = MenuItems.onChanged(context, value!);
+          });
+        },
+        dropdownStyleData: DropdownStyleData(
+          width: 160,
+          direction: DropdownDirection.left,
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.black,
           ),
+          offset: const Offset(0, 8),
+        ),
+        menuItemStyleData: MenuItemStyleData(
+          customHeights: List<double>.filled(MenuItems.firstItems.length, 48),
+          padding: const EdgeInsets.only(left: 16, right: 16),
         ),
       ),
     );

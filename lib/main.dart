@@ -33,6 +33,7 @@ class MainApp extends StatelessWidget {
         colorSchemeSeed: Colors.blue,
       ),
       builder: (theme, darkTheme) => MaterialApp(
+        
         theme: theme,
         themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,

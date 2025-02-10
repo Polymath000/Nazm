@@ -7,16 +7,25 @@ class OrDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(child: Divider()),
+        Flexible(
+            child: Divider(
+          color: Colors.black87,
+        )),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text('OR'),
+          child: Text(
+            'OR',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-        Flexible(child: Divider()),
+        Flexible(
+            child: Divider(
+          color: Colors.black87,
+        )),
       ],
     );
   }

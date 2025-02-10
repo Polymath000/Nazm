@@ -5,7 +5,9 @@ class CustomTextField extends StatelessWidget {
       {super.key,
       required this.hintText,
       required this.onChanged,
-      this.enabled = true});
+      this.enabled = true,
+      this.color = Colors.black});
+  Color color;
   final String hintText;
   void Function(String)? onChanged;
   bool enabled;
@@ -14,6 +16,7 @@ class CustomTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: TextFormField(
+        style: TextStyle(color: color),
         validator: (data) {
           if (data!.isEmpty) {
             return 'value is empty';
@@ -28,40 +31,43 @@ class CustomTextField extends StatelessWidget {
         onChanged: onChanged,
         enabled: enabled,
         decoration: InputDecoration(
-            disabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 166, 171, 174),
-              ),
-              borderRadius: BorderRadius.circular(10),
+          helperStyle: TextStyle(color: color),
+          hintText: 'example@no.yes',
+          labelStyle: TextStyle(color: color),
+          floatingLabelStyle: TextStyle(color: color),
+          disabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 84, 96, 104),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 166, 171, 174),
-              ),
-              borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 84, 96, 104),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 2, 61, 119),
-              ),
-              borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 1, 161, 253),
             ),
-            errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 255, 0, 0),
-              ),
-              borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.red),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 123, 77, 77),
             ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 123, 77, 77),
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            labelText: hintText,
-            hintStyle: const TextStyle(
-              color: Color(0xff8f96a0),
-            )),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          labelText: hintText,
+          hintStyle: TextStyle(
+            color: color,
+          ),
+        ),
       ),
     );
   }
