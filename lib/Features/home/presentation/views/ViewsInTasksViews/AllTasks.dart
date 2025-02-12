@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:to_do/Features/home/presentation/views/widgets/task_body.dart';
+
+import '../widgets/priority.dart';
 
 class AllTasksView extends StatelessWidget {
-  const AllTasksView({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Column(
             children: [
-              
+              TaskBody(),
+              TaskBody(),
+              TaskBody(),
+              TaskBody(),
+              TaskBody(),
+              TaskBody(),
             ],
-            ),
+          ),
         ),
       ),
     );

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:to_do/Features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:to_do/firebase_options.dart';
 
-import 'Features/home/presentation/views/tasks_view.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -39,7 +37,6 @@ class MainApp extends StatelessWidget {
         theme: theme,
         themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
-        // home: TasksView(),
         home: const onboarding(),
       ),
       initial: savedThemeMode ?? AdaptiveThemeMode.light,
