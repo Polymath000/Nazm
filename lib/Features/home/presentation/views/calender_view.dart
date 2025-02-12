@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add_task_buttom.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/app_bar_of_profile.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/calender_widget.dart';
+import 'package:to_do/Features/home/presentation/views/widgets/show_model_button_sheet.dart';
 
 class CalenderView extends StatelessWidget {
   const CalenderView({super.key});
@@ -78,14 +79,14 @@ class _CalenderState extends State<Calender> {
                   AddTaskButtom(
                     onPressed: () {
                       showModalBottomSheet(
+                          barrierLabel: 'Task',
                           isScrollControlled: true,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16)),
                           context: context,
                           builder: (context) {
-                            return const Form(child: TextField());
-                          }
-                          );
+                            return const ShowModelButtonSheet();
+                          });
                     },
                   ),
                 ],

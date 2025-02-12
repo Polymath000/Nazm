@@ -3,6 +3,7 @@ import 'package:to_do/Features/Auth/presentation/views/widgets/custom_text_field
 import 'package:to_do/Features/home/presentation/views/edit_profile.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/app_bar_of_profile.dart';
 import 'package:to_do/Features/onboarding/presentation/views/Widgets/custom_buttom.dart';
+import 'package:to_do/constants.dart';
 
 class ProfileView extends StatelessWidget {
   ProfileView({
@@ -21,7 +22,7 @@ class ProfileView extends StatelessWidget {
               backgroundColor: Color.fromARGB(255, 167, 155, 155),
               child: CircleAvatar(
                 maxRadius: 75,
-                backgroundImage: AssetImage('assets/images/me.png'),
+                backgroundImage: AssetImage(testImage),
               ),
             ),
             const SizedBox(
