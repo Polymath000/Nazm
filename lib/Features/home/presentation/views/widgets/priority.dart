@@ -2,7 +2,8 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class Priority extends StatefulWidget {
-  const Priority({super.key});
+  const Priority({super.key, required this.onPrioritySelected});
+  final Function(String) onPrioritySelected;
 
   @override
   State<Priority> createState() => _PriorityState();
@@ -28,7 +29,9 @@ class _PriorityState extends State<Priority> {
         ],
         onChanged: (value) {
           setState(() {
-            color = MenuItems.onChanged(context, value!);
+            widget.onPrioritySelected(value!.text);
+
+            color = MenuItems.onChanged(context, value);
           });
         },
         dropdownStyleData: DropdownStyleData(

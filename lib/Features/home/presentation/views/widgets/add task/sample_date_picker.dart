@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add%20task/material_date_range_picker_dialog.dart';
 
 class SampleDatePicker extends StatefulWidget {
-  const SampleDatePicker({Key? key}) : super(key: key);
+   SampleDatePicker({Key? key, required this.onDateSelected}) : super(key: key);
+
+
+
+  final Function(String, String) onDateSelected;
 
   @override
   State<SampleDatePicker> createState() => _SampleDatePickerState();
 }
 
 class _SampleDatePickerState extends State<SampleDatePicker> {
-  DateTime? startDateSelected, endDateSelected;
+  DateTime? startDateSelected, endDateSelected = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +28,7 @@ class _SampleDatePickerState extends State<SampleDatePicker> {
                   MaterialDateRangePickerDialog.showDateRangePicker(context,
                       selectDateRangeActionCallback: (startDate, endDate) {
                     setState(() {
+                      widget.onDateSelected(startDate.toString(), endDate.toString());
                       startDateSelected = startDate;
                       endDateSelected = endDate;
                     });
@@ -33,30 +38,3 @@ class _SampleDatePickerState extends State<SampleDatePicker> {
     );
   }
 }
-
-
-      // onPopInvokedWithResult: (didPop, result) {
-      //   Dialogs.materialDialog(
-      //     msg: 'Are you sure ? you can\'t undo this',
-      //     title: "Delete",
-      //     color: Colors.white,
-      //     context: context,
-      //     actions: [
-      //       IconsOutlineButton(
-      //         onPressed: () {},
-      //         text: 'Cancel',
-      //         iconData: Icons.cancel_outlined,
-      //         textStyle: TextStyle(color: Colors.grey),
-      //         iconColor: Colors.grey,
-      //       ),
-      //       IconsButton(
-      //         onPressed: () {},
-      //         text: 'Delete',
-      //         iconData: Icons.delete,
-      //         color: Colors.red,
-      //         textStyle: TextStyle(color: Colors.white),
-      //         iconColor: Colors.white,
-      //       ),
-      //     ],
-      //   );
-      // },

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const kPrimaryPriority = "No Priority";
+const kTaskBox = 'tasks';
 const testFullName = 'Abdelrahman Khaled Saad Eldin';
 const testImage = 'assets/images/me.png';
 const kPrimaryColor = 0xff086BFF;

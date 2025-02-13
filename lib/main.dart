@@ -1,14 +1,26 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:to_do/Features/home/presentation/views/tasks_view.dart';
 import 'package:to_do/Features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:to_do/firebase_options.dart';
 
+import 'Features/home/data/task_model.dart';
+import 'constants.dart';
+
 void main() async {
+  // flutter building
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   WidgetsFlutterBinding.ensureInitialized();
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
+
+  // Hive init
+  await Hive.initFlutter();
+  Hive.registerAdapter(TaskModelAdapter());
+  await Hive.openBox<TaskModel>(kTaskBox);
+
   runApp(MainApp(
     savedThemeMode: savedThemeMode,
   ));
@@ -33,11 +45,11 @@ class MainApp extends StatelessWidget {
         colorSchemeSeed: Colors.blue,
       ),
       builder: (theme, darkTheme) => MaterialApp(
-        
         theme: theme,
         themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
-        home: const onboarding(),
+        // home: const onboarding(),
+        home: TasksView(),
       ),
       initial: savedThemeMode ?? AdaptiveThemeMode.light,
     );

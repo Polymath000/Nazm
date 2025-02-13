@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/Data/manager/signup_cubit/signup_cubit.dart';
 import 'package:to_do/Features/Auth/presentation/views/sign_up_view.dart';
+import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 
 class SignUpWithGoogle extends StatefulWidget {

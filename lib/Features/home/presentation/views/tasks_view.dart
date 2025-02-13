@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/show_model_button_sheet.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/task_views_list.dart';
-
 import '../../../../constants.dart';
 import 'settings.dart';
 
@@ -83,7 +82,7 @@ class _TasksViewState extends State<TasksView> {
               ),
               Expanded(
                 child: ListView.builder(
-                    physics: const BouncingScrollPhysics(), // Add this
+                    physics: const BouncingScrollPhysics(), 
                     // shrinkWrap: true,
                     itemCount: taskViews.length,
                     itemBuilder: (context, index) {

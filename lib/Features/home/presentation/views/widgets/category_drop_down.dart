@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:to_do/Features/home/presentation/views/Color_pops.dart';
 
 class CategoryDropDown extends StatefulWidget {
-  const CategoryDropDown({
+  CategoryDropDown({
     super.key,
+    required this.onCategorySelected,
   });
+  final Function(String) onCategorySelected;
 
   @override
   State<CategoryDropDown> createState() => _CategoryDropDownState();
@@ -27,17 +28,18 @@ class _CategoryDropDownState extends State<CategoryDropDown> {
             ),
           ),
           DropdownMenuItem<MenuItem>(
-            value: null, // To identify the "Add category" action
+            value: null,
             child: MenuItems.addCategory(),
           ),
         ],
         value: selectedValue,
         onChanged: (value) {
           if (value == null) {
-            _handleAddCategory(); // Handle "Add category" action
+            _handleAddCategory();
           } else {
             setState(() {
               selectedValue = value as MenuItem?;
+              widget.onCategorySelected(value.text);
             });
           }
         },
@@ -82,14 +84,6 @@ class _CategoryDropDownState extends State<CategoryDropDown> {
                       const InputDecoration(hintText: 'Enter category name'),
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   height: 200,
-                //   child: ColorsListView(
-                //     onColorChanged: (Color color) {
-                //       selectedColor = color;
-                //     },
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -132,7 +126,7 @@ class MenuItem {
 class MenuItems {
   static List<MenuItem> firstItems = [study, work, family];
 
-  static const study = MenuItem(text: 'Study', color: Colors.red);
+  static const study = MenuItem(text: 'Personal', color: Colors.red);
   static const work = MenuItem(text: 'Work', color: Colors.yellow);
   static const family = MenuItem(text: 'Family', color: Colors.blue);
 

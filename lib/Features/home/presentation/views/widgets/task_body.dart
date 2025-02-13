@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/priority.dart';
+import 'package:to_do/constants.dart';
 
 import 'show_model_button_sheet.dart';
 
 class TaskBody extends StatefulWidget {
-  const TaskBody({super.key});
+  const TaskBody({
+    super.key,
+  });
 
   @override
   State<TaskBody> createState() => _TaskBodyState();
 }
 
 class _TaskBodyState extends State<TaskBody> {
+  void updatePriority(String newPriority) {
+    setState(() {
+      priority = newPriority;
+    });
+  }
+
+  String priority = kPrimaryPriority;
   bool isCompleted = false;
   @override
   Widget build(BuildContext context) {
@@ -57,7 +67,9 @@ class _TaskBodyState extends State<TaskBody> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        trailing: Priority(),
+        trailing: Priority(
+          onPrioritySelected: updatePriority,
+        ),
       ),
     );
   }

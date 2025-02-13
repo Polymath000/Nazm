@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/Data/manager/signup_cubit/signup_cubit.dart';
 import 'package:to_do/Features/Auth/presentation/views/log_in_view.dart';
 import 'package:to_do/Features/Auth/presentation/views/sign_up_view.dart';
+import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/custom_buttom_mode.dart';
 import 'package:to_do/Features/onboarding/presentation/views/Widgets/custom_buttom.dart';
 

@@ -7,6 +7,7 @@ import 'package:to_do/Features/Auth/Data/manager/signup_cubit/signup_cubit.dart'
 import 'package:to_do/Features/Auth/presentation/views/widgets/main_custom_buttom.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/custom_text_field.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/password_text_field.dart';
+import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 import 'package:to_do/constants.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -179,9 +180,4 @@ class _SignUpViewState extends State<SignUpView> {
       ]),
     );
   }
-}
-
-ShowSnakBar(BuildContext context, String errorMessage) {
-  showTopSnackBar(
-      Overlay.of(context), CustomSnackBar.info(message: errorMessage));
 }
