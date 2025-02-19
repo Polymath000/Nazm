@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do/Features/Auth/presentation/views/sign_up_view.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/loading_progress_h_u_d.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/home/data/cubit/add_task/add_task_cubit.dart';
+import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add%20task/sample_date_picker.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/category_drop_down.dart';
@@ -19,11 +19,15 @@ class ShowModelButtonSheet extends StatefulWidget {
 class _ShowModelButtonSheetState extends State<ShowModelButtonSheet> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AddTaskCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AddTaskCubit()),
+        BlocProvider(create: (context) => TaskCubit()),
+      ],
       child: BlocConsumer<AddTaskCubit, AddTaskState>(
         listener: (context, state) {
           if (state is AddTaskLoading) {
+            // Show loading
           } else if (state is AddTaskSuccess) {
             Navigator.of(context).pop();
           } else if (state is AddTaskFailure) {
@@ -57,7 +61,16 @@ class _AddTaskFormState extends State<AddTaskForm> {
 
   void updatePriority(String newPriority) {
     setState(() {
-      priority = newPriority;
+      // Convert the full priority text to just the level
+      if (newPriority == 'High Priority') {
+        priority = 'High';
+      } else if (newPriority == 'Meduim Priority') {
+        priority = 'Meduim';
+      } else if (newPriority == 'Low Priority') {
+        priority = 'Low';
+      } else {
+        priority = 'No';
+      }
     });
   }
 
@@ -78,8 +91,12 @@ class _AddTaskFormState extends State<AddTaskForm> {
   DateTime? startDateSelected, endDateSelected;
   final GlobalKey<FormState> formKey = GlobalKey();
   AutovalidateMode autoValidate = AutovalidateMode.disabled;
+
   @override
   Widget build(BuildContext context) {
+    // Get the TaskCubit instance from the context
+    final taskCubit = context.read<TaskCubit>();
+
     return Form(
       autovalidateMode: autoValidate,
       key: formKey,
@@ -159,29 +176,31 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     onCategorySelected: updateCategory,
                   ),
                   IconButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          formKey.currentState!.save();
-                          var task = TaskModel(
-                            firstDate: firstDate,
-                            lastDate: lastDate,
-                            priority: priority,
-                            category: category,
-                            title: title,
-                            description: description,
-                            isDone: false,
-                          );
-                          BlocProvider.of<AddTaskCubit>(context).addTask(task);
-                        } else {
-                          setState(() {
-                            autoValidate = AutovalidateMode.always;
-                          });
-                        }
-                      },
-                      icon: Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Color(kPrimaryColor),
-                      ))
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        formKey.currentState!.save();
+                        var task = TaskModel(
+                          firstDate: firstDate,
+                          lastDate: lastDate,
+                          priority: priority,
+                          category: category,
+                          title: title,
+                          description: description,
+                          isDone: false,
+                        );
+                        BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+                        BlocProvider.of<AddTaskCubit>(context).addTask(task);
+                      } else {
+                        setState(() {
+                          autoValidate = AutovalidateMode.always;
+                        });
+                      }
+                    },
+                    icon: Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Color(kPrimaryColor),
+                    ),
+                  ),
                 ],
               ),
             ],
