@@ -2,8 +2,14 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class Priority extends StatefulWidget {
-  const Priority({super.key, required this.onPrioritySelected});
+  const Priority({
+    super.key, 
+    required this.onPrioritySelected, 
+    required this.color,
+  });
+  
   final Function(String) onPrioritySelected;
+  final Color color;
 
   @override
   State<Priority> createState() => _PriorityState();
@@ -11,13 +17,42 @@ class Priority extends StatefulWidget {
 
 class _PriorityState extends State<Priority> {
   Color color = Colors.grey;
+
+  @override
+  void initState() {
+    super.initState();
+    color = widget.color;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
-        customButton: Icon(
-          Icons.flag_outlined,
-          color: color,
+        customButton: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.flag_outlined,
+                color: color,
+                size: 20,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Priority',
+                style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
         items: [
           ...MenuItems.firstItems.map(
@@ -30,7 +65,6 @@ class _PriorityState extends State<Priority> {
         onChanged: (value) {
           setState(() {
             widget.onPrioritySelected(value!.text);
-
             color = MenuItems.onChanged(context, value);
           });
         },
@@ -40,7 +74,7 @@ class _PriorityState extends State<Priority> {
           padding: const EdgeInsets.symmetric(vertical: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: Colors.black,
+            color: Colors.grey.shade900,
           ),
           offset: const Offset(0, 8),
         ),
@@ -54,7 +88,12 @@ class _PriorityState extends State<Priority> {
 }
 
 class MenuItem {
-  const MenuItem({required this.text, required this.icon, required this.color});
+  const MenuItem({
+    required this.text, 
+    required this.icon, 
+    required this.color,
+  });
+  
   final Color color;
   final String text;
   final IconData icon;
@@ -64,29 +103,46 @@ class MenuItems {
   static const List<MenuItem> firstItems = [no, low, meduim, high];
 
   static const high = MenuItem(
-      text: 'High Priority', icon: Icons.flag_outlined, color: Colors.red);
+    text: 'High Priority',
+    icon: Icons.flag_outlined,
+    color: Colors.red,
+  );
+  
   static const meduim = MenuItem(
-      text: 'Meduim Priority', icon: Icons.flag_outlined, color: Colors.yellow);
+    text: 'Meduim Priority',
+    icon: Icons.flag_outlined,
+    color: Colors.yellow,
+  );
+  
   static const low = MenuItem(
-      text: 'Low Priority', icon: Icons.flag_outlined, color: Colors.blue);
+    text: 'Low Priority',
+    icon: Icons.flag_outlined,
+    color: Colors.blue,
+  );
+  
   static const no = MenuItem(
-      text: 'No Priority', icon: Icons.flag_outlined, color: Colors.grey);
+    text: 'No Priority',
+    icon: Icons.flag_outlined,
+    color: Colors.grey,
+  );
 
   static Widget buildItem(MenuItem item) {
     return Row(
       children: [
         Icon(
           item.icon,
-          size: 22,
+          size: 20,
           color: item.color,
         ),
-        const SizedBox(
-          width: 10,
-        ),
+        const SizedBox(width: 10),
         Expanded(
           child: Text(
             item.text,
-            style: TextStyle(color: item.color),
+            style: TextStyle(
+              color: item.color,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ],

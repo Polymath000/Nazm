@@ -91,11 +91,12 @@ class _TasksViewState extends State<TasksView> {
                       itemCount: taskViews.length,
                       itemBuilder: (context, index) {
                         return listTile(
-                          title: taskViews[index]['title'],
-                          icon: taskViews[index]['icon'],
-                          index: index,
-                          numOftasks: taskViews[index]['numOftasks'],
-                        );
+                            title: taskViews[index]['title'],
+                            icon: taskViews[index]['icon'],
+                            index: index,
+                            numOftasks: taskViews[index]['numOftasks'],
+                            selectedIndex: _selectedIndex,
+                            context: context);
                       },
                     ),
                   )
@@ -112,20 +113,22 @@ class _TasksViewState extends State<TasksView> {
       {required String title,
       required IconData icon,
       required int index,
-      required int numOftasks}) {
+      required int numOftasks,
+      required int selectedIndex,
+      required BuildContext context}) {
     return ListTile(
       leading: Icon(
         icon,
-        color: Colors.orange,
+        color: selectedIndex == index ? Colors.orange : Colors.grey,
       ),
       title: Text(title),
       onTap: () {
         setState(() {
           _selectedIndex = index;
+          BlocProvider.of<TaskCubit>(context).fetchAllTasks();
         });
         _scaffoldKey.currentState!.closeDrawer();
       },
-      //? Number of tasks
       trailing: Text(numOftasks.toString()),
     );
   }
