@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do/Features/home/data/task_model.dart';
 
 const kPrimaryPriority = "No Priority";
 const kTaskBox = 'tasks';
@@ -23,3 +24,17 @@ List<Color> Kcolors = [
   const Color(0xffF18805),
   const Color(0xffF0A202),
 ];
+
+bool isOverdue(TaskModel Task) {
+  DateTime taskDate = DateTime.parse(Task.firstDate);
+  int dateDay = taskDate.day;
+  int dateMonth = taskDate.month;
+  int dateYear = taskDate.year;
+  int today = DateTime.now().day;
+  int todayMonth = DateTime.now().month;
+  int todayYear = DateTime.now().year;
+  bool re = (dateMonth < todayMonth && dateYear == todayYear) ||
+      (dateMonth == todayMonth && dateDay < today && dateYear == todayYear) ||
+      todayYear < dateYear;
+  return re;
+}

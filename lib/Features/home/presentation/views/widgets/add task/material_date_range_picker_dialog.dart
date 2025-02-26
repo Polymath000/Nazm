@@ -47,10 +47,8 @@ class MaterialDateRangePickerDialog {
                 confirmText: confirmText,
                 cancelText: cancelText,
                 startDateTitle: startDateTitle,
-                endDateTitle: endDateTitle,
 
                 startDate: initStartDate,
-                endDate: initEndDate,
                 radius: radius,
                 autoClose: autoClose,
                 selectDateRangeActionCallback: selectDateRangeActionCallback

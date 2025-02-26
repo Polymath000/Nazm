@@ -15,60 +15,55 @@ import 'package:to_do/Features/home/presentation/views/widgets/add%20task/widget
 import 'package:to_do/Features/home/presentation/views/widgets/add%20task/widgets/text_field_builder.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add%20task/widgets/wrap_text_button.dart';
 
-typedef SelectDateRangeActionCallback = Function(DateTime? startDate, DateTime? endDate);
+typedef SelectDateRangeActionCallback = Function(DateTime? startDate);
 
 class MultipleViewDateRangePicker extends StatefulWidget {
   final String cancelText;
   final String confirmText;
   final String startDateTitle;
-  final String endDateTitle;
   final SelectDateRangeActionCallback? selectDateRangeActionCallback;
   final DateRangePickerController? datePickerController;
   final TextEditingController? startDateInputController;
-  final TextEditingController? endDateInputController;
   final DateTime? startDate;
-  final DateTime? endDate;
   final List<Widget>? customDateRangeButtons;
   final double? radius;
   final double? tabletInputFieldMaxWidth;
   final bool autoClose;
 
-  const MultipleViewDateRangePicker({
-    Key? key,
-    this.confirmText = 'Set date',
-    this.cancelText = 'Cancel',
-    this.startDateTitle = 'Start date',
-    this.endDateTitle = 'End date',
-    this.startDate,
-    this.endDate,
-    this.selectDateRangeActionCallback,
-    this.datePickerController,
-    this.startDateInputController,
-    this.endDateInputController,
-    this.customDateRangeButtons,
-    this.radius,
-    this.tabletInputFieldMaxWidth,
-    this.autoClose = true
-  }) : super(key: key);
+  const MultipleViewDateRangePicker(
+      {Key? key,
+      this.confirmText = 'Set date',
+      this.cancelText = 'Cancel',
+      this.startDateTitle = 'Start date',
+      this.startDate,
+      this.selectDateRangeActionCallback,
+      this.datePickerController,
+      this.startDateInputController,
+      this.customDateRangeButtons,
+      this.radius,
+      this.tabletInputFieldMaxWidth,
+      this.autoClose = true})
+      : super(key: key);
 
   @override
-  State<MultipleViewDateRangePicker> createState() => _MultipleViewDateRangePickerState();
+  State<MultipleViewDateRangePicker> createState() =>
+      _MultipleViewDateRangePickerState();
 }
 
-class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicker> {
+class _MultipleViewDateRangePickerState
+    extends State<MultipleViewDateRangePicker> {
   final String dateTimePattern = 'dd/MM/yyyy';
   static const _desktopDateRangePickerWidth = 650.0;
   static const _tabletDateRangePickerBottomPadding = 16.0;
-  final _startAndEndDateInputTabletKey = GlobalKey();
+  final _startDateInputTabletKey = GlobalKey();
   final _bottomViewTabletConfirmationButtonsKey = GlobalKey();
   bool _bottomViewTabletConfirmationButtonsOverflow = false;
 
   late DateRangePickerController _datePickerController;
   late TextEditingController _startDateInputController;
-  late TextEditingController _endDateInputController;
 
-  DateTime? _startDate, _endDate;
-  late Debouncer _denounceStartDate, _denounceEndDate;
+  DateTime? _startDate;
+  late Debouncer _denounceStartDate;
 
   @override
   void initState() {
@@ -76,10 +71,8 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
         widget.datePickerController ?? DateRangePickerController();
     _startDateInputController =
         widget.startDateInputController ?? TextEditingController();
-    _endDateInputController =
-        widget.endDateInputController ?? TextEditingController();
+
     _startDate = widget.startDate ?? DateTime.now();
-    _endDate = widget.endDate;
     _initDebounceTimeForDate();
     _updateDateTextInput();
     super.initState();
@@ -88,23 +81,26 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
 
   void _checkIfTabletBottomButtonIsOverflowed() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final startAndEndDateInputTabletRenderBox = _startAndEndDateInputTabletKey
-        .currentContext?.findRenderObject() as RenderBox?;
-      final bottomViewTabletConfirmationButtonsRenderBox = _bottomViewTabletConfirmationButtonsKey
-        .currentContext?.findRenderObject() as RenderBox?;
-      
-      if (startAndEndDateInputTabletRenderBox == null
-        || bottomViewTabletConfirmationButtonsRenderBox == null) return;
-    
-      final startAndEndDateInputTabletWidth = startAndEndDateInputTabletRenderBox
-        .size.width;
-      final bottomViewTabletConfirmationButtonsWidth = bottomViewTabletConfirmationButtonsRenderBox
-        .size.width;
-      if (bottomViewTabletConfirmationButtonsWidth + startAndEndDateInputTabletWidth 
-        > _desktopDateRangePickerWidth - _tabletDateRangePickerBottomPadding * 2) {
-          setState(() {
-            _bottomViewTabletConfirmationButtonsOverflow = true;
-          });
+      final startDateInputTabletRenderBox =
+          _startDateInputTabletKey.currentContext?.findRenderObject()
+              as RenderBox?;
+      final bottomViewTabletConfirmationButtonsRenderBox =
+          _bottomViewTabletConfirmationButtonsKey.currentContext
+              ?.findRenderObject() as RenderBox?;
+
+      if (startDateInputTabletRenderBox == null ||
+          bottomViewTabletConfirmationButtonsRenderBox == null) return;
+
+      final startDateInputTabletWidth =
+          startDateInputTabletRenderBox.size.width;
+      final bottomViewTabletConfirmationButtonsWidth =
+          bottomViewTabletConfirmationButtonsRenderBox.size.width;
+      if (bottomViewTabletConfirmationButtonsWidth + startDateInputTabletWidth >
+          _desktopDateRangePickerWidth -
+              _tabletDateRangePickerBottomPadding * 2) {
+        setState(() {
+          _bottomViewTabletConfirmationButtonsOverflow = true;
+        });
       }
     });
   }
@@ -112,61 +108,54 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
   void _initDebounceTimeForDate() {
     _denounceStartDate =
         Debouncer<String>(const Duration(milliseconds: 300), initialValue: '');
-    _denounceEndDate =
-        Debouncer<String>(const Duration(milliseconds: 300), initialValue: '');
-
     _denounceStartDate.values.listen((value) => _onStartDateTextChanged(value));
-    _denounceEndDate.values.listen((value) => _onEndDateTextChanged(value));
   }
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
-      mobile: _buildViewMobile(context),
-      tablet: _buildViewTablet(context)
-    );
+        mobile: _buildViewMobile(context), tablet: _buildViewTablet(context));
   }
 
   Widget _buildViewTablet(BuildContext context) {
     return Center(
       child: Container(
-        height: 500 ,
-        width: ResponsiveUtils.isDesktop(context) ? _desktopDateRangePickerWidth : 500,
+        height: 500,
+        width: ResponsiveUtils.isDesktop(context)
+            ? _desktopDateRangePickerWidth
+            : 500,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(widget.radius ?? 16)),
-          boxShadow: const [
-            BoxShadow(
-              color: ColorsUtils.colorShadow,
-              spreadRadius: 24,
-              blurRadius: 24,
-              offset: Offset.zero
-            ),
-            BoxShadow(
-              color: ColorsUtils.colorShadowBottom,
-              spreadRadius: 2,
-              blurRadius: 2,
-              offset: Offset.zero
-            )
-          ]
-        ),
+            color: Colors.white,
+            borderRadius:
+                BorderRadius.all(Radius.circular(widget.radius ?? 16)),
+            boxShadow: const [
+              BoxShadow(
+                  color: ColorsUtils.colorShadow,
+                  spreadRadius: 24,
+                  blurRadius: 24,
+                  offset: Offset.zero),
+              BoxShadow(
+                  color: ColorsUtils.colorShadowBottom,
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  offset: Offset.zero)
+            ]),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
-            padding: const EdgeInsets.all(8),
-            child: _buildTopView(context)
-          ),
+              padding: const EdgeInsets.all(8), child: _buildTopView(context)),
           const Divider(color: ColorsUtils.colorDivider, height: 1),
           Expanded(
             child: Stack(children: [
-              Positioned.fill(child: Padding(
+              Positioned.fill(
+                  child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SfDateRangePicker(
                   controller: _datePickerController,
                   onSelectionChanged: _onSelectionChanged,
                   view: DateRangePickerView.month,
-                  selectionMode: DateRangePickerSelectionMode.range,
+                  selectionMode: DateRangePickerSelectionMode.single,
                   initialDisplayDate: _startDate,
-                  initialSelectedRange: PickerDateRange(_startDate, _endDate),
+                  initialSelectedDate: _startDate,
                   enableMultiView: true,
                   enablePastDates: true,
                   viewSpacing: 16,
@@ -175,48 +164,42 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
                   selectionShape: DateRangePickerSelectionShape.rectangle,
                   showNavigationArrow: true,
                   selectionColor: ColorsUtils.colorButton,
-                  startRangeSelectionColor: ColorsUtils.colorButton,
-                  endRangeSelectionColor: ColorsUtils.colorButton,
                   selectionRadius: 6,
                   monthViewSettings: DateRangePickerMonthViewSettings(
-                    dayFormat: ResponsiveUtils.isDesktop(context) ? 'EEE' : 'EE',
-                    firstDayOfWeek: 1,
-                    viewHeaderHeight: 48,
-                    viewHeaderStyle: const DateRangePickerViewHeaderStyle(
-                      backgroundColor: Colors.white,
-                      textStyle: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13
-                      )
-                    )
-                  ),
+                      dayFormat:
+                          ResponsiveUtils.isDesktop(context) ? 'EEE' : 'EE',
+                      firstDayOfWeek: 1,
+                      viewHeaderHeight: 48,
+                      viewHeaderStyle: const DateRangePickerViewHeaderStyle(
+                          backgroundColor: Colors.white,
+                          textStyle: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13))),
                   monthCellStyle: const DateRangePickerMonthCellStyle(
                     todayTextStyle: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 13
-                    ),
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 13),
                     todayCellDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(6)),
-                      color: ColorsUtils.colorButtonDisable
-                    ),
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        color: ColorsUtils.colorButtonDisable),
                   ),
                   headerStyle: const DateRangePickerHeaderStyle(
-                    textAlign: TextAlign.center,
-                    textStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
+                      textAlign: TextAlign.center,
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
                 ),
               )),
-              const Center(child: VerticalDivider(color: ColorsUtils.colorDivider, width: 1)),
+              const Center(
+                  child: VerticalDivider(
+                      color: ColorsUtils.colorDivider, width: 1)),
             ]),
           ),
           const Divider(color: ColorsUtils.colorDivider, height: 1),
-           _buildBottomViewTablet(context),
+          _buildBottomViewTablet(context),
         ]),
       ),
     );
@@ -224,46 +207,39 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
 
   Widget _buildViewMobile(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(widget.radius ?? 16),
-          topRight: Radius.circular(widget.radius ?? 16),
-        ),
-        color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-            color: ColorsUtils.colorShadow,
-            spreadRadius: 24,
-            blurRadius: 24,
-            offset: Offset.zero
-          ),
-          BoxShadow(
-            color: ColorsUtils.colorShadowBottom,
-            spreadRadius: 2,
-            blurRadius: 2,
-            offset: Offset.zero
-          )
-        ]
-      ),
-      child: SingleChildScrollView(
-        child: SafeArea(
-          top: false,
-          left: false,
-          right: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        width: double.infinity,
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(widget.radius ?? 16),
+              topRight: Radius.circular(widget.radius ?? 16),
+            ),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                  color: ColorsUtils.colorShadow,
+                  spreadRadius: 24,
+                  blurRadius: 24,
+                  offset: Offset.zero),
+              BoxShadow(
+                  color: ColorsUtils.colorShadowBottom,
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  offset: Offset.zero)
+            ]),
+        child: SingleChildScrollView(
+          child: SafeArea(
+            top: false,
+            left: false,
+            right: false,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               _buildTopView(context),
               _buildDateInputFormMobile(context, DateType.start),
-              _buildDateInputFormMobile(context, DateType.end),
               _buildBottomViewMobile(context)
-            ]
+            ]),
           ),
-        ),
-      )
-    );
+        ));
   }
 
   Widget _buildTopView(BuildContext context) {
@@ -281,12 +257,10 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
       return SizedBox(
         height: 52,
         child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.all(8),
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-          }
-        ),
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.all(8),
+            shrinkWrap: true,
+            itemBuilder: (context, index) {}),
       );
     }
   }
@@ -298,12 +272,11 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            dateType.getTitle(widget.startDateTitle, widget.endDateTitle),
+            widget.startDateTitle,
             style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
-              color: ColorsUtils.colorLabel
-            ),
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+                color: ColorsUtils.colorLabel),
           ),
           const SizedBox(height: 8),
           Stack(alignment: Alignment.center, children: [
@@ -311,22 +284,11 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
               width: double.infinity,
               child: TextFieldBuilder(
                 key: dateType.keyWidget,
-                textController: dateType == DateType.start
-                  ? _startDateInputController
-                  : _endDateInputController,
+                textController: _startDateInputController,
                 onTextChange: (value) {
-                  switch(dateType) {
-                    case DateType.start:
-                      _denounceStartDate.value = value;
-                      break;
-                    case DateType.end:
-                      _denounceEndDate.value = value;
-                      break;
-                  }
-
+                  _denounceStartDate.value = value;
                   if (mounted) {
-                    setState(() {
-                    });
+                    setState(() {});
                   }
                 },
                 textInputAction: TextInputAction.next,
@@ -337,38 +299,31 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
               ),
             ),
             Positioned(
-              right: 12,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    MaterialDateRangePickerDialog.showDatePicker(
-                      context,
-                      title: dateType.getTitle(widget.startDateTitle, widget.endDateTitle),
-                      selectDateActionCallback: (dateSelected) {
+                right: 12,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      MaterialDateRangePickerDialog.showDatePicker(context,
+                          title: widget.startDateTitle,
+                          selectDateActionCallback: (dateSelected) {
                         if (mounted) {
                           setState(() {
-                            if (dateType == DateType.start) {
-                              _startDate = dateSelected;
-                            } else {
-                              _endDate = dateSelected;
-                            }
+                            _startDate = dateSelected;
                             _updateDateTextInput();
                           });
                         }
-                      }
-                    );
-                  },
-                  customBorder: const CircleBorder(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: SvgPicture.asset(
-                      ImagePaths.icCalendar,
+                      });
+                    },
+                    customBorder: const CircleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: SvgPicture.asset(
+                        ImagePaths.icCalendar,
+                      ),
                     ),
                   ),
-                ),
-              )
-            )
+                ))
           ]),
         ],
       ),
@@ -384,10 +339,9 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
             widget.cancelText,
             padding: const EdgeInsets.symmetric(horizontal: 8),
             textStyle: const TextStyle(
-              color: ColorsUtils.colorButton,
-              fontWeight: FontWeight.w500,
-              fontSize: 16
-            ),
+                color: ColorsUtils.colorButton,
+                fontWeight: FontWeight.w500,
+                fontSize: 16),
             backgroundColor: ColorsUtils.colorButtonDisable,
             onTap: Navigator.maybeOf(context)?.maybePop,
           ),
@@ -398,7 +352,7 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
             widget.confirmText,
             padding: const EdgeInsets.symmetric(horizontal: 8),
             onTap: () {
-              widget.selectDateRangeActionCallback?.call(_startDate, _endDate);
+              widget.selectDateRangeActionCallback?.call(_startDate);
               if (widget.autoClose) {
                 Navigator.maybeOf(context)?.maybePop();
               }
@@ -418,13 +372,6 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               _buildDateInputFormTablet(context, DateType.start),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: SvgPicture.asset(
-                  ImagePaths.icDateRange,
-                )
-              ),
-              _buildDateInputFormTablet(context, DateType.end),
             ]),
             const SizedBox(height: 8),
             _buildBottomViewMobile(context)
@@ -435,7 +382,7 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
       return Padding(
         padding: EdgeInsets.all(_tabletDateRangePickerBottomPadding),
         child: Row(children: [
-          _startAndEndDateInputFormTablet(context),
+          _startDateInputFormTablet(context),
           const Spacer(),
           _bottomViewTabletConfirmationButtons(context),
         ]),
@@ -445,7 +392,7 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
         padding: EdgeInsets.all(_tabletDateRangePickerBottomPadding),
         child: Column(
           children: [
-            _startAndEndDateInputFormTablet(context),
+            _startDateInputFormTablet(context),
             const SizedBox(height: 12),
             _bottomViewTabletConfirmationButtons(context),
           ],
@@ -457,22 +404,12 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
   Widget _buildDateInputFormTablet(BuildContext context, DateType dateType) {
     return TextFieldBuilder(
       key: dateType.keyWidget,
-      textController: dateType == DateType.start
-        ? _startDateInputController
-        : _endDateInputController,
+      textController:
+          dateType == DateType.start ? _startDateInputController : null,
       onTextChange: (value) {
-        switch(dateType) {
-          case DateType.start:
-            _denounceStartDate.value = value;
-            break;
-          case DateType.end:
-            _denounceEndDate.value = value;
-            break;
-        }
-
+        _denounceStartDate.value = value;
         if (mounted) {
-          setState(() {
-          });
+          setState(() {});
         }
       },
       hintText: 'dd/mm/yyyy',
@@ -483,19 +420,12 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
     );
   }
 
-  Widget _startAndEndDateInputFormTablet(BuildContext context) {
+  Widget _startDateInputFormTablet(BuildContext context) {
     return Row(
-      key: _startAndEndDateInputTabletKey,
+      key: _startDateInputTabletKey,
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildDateInputFormTablet(context, DateType.start),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: SvgPicture.asset(
-            ImagePaths.icDateRange,
-          ),
-        ),
-        _buildDateInputFormTablet(context, DateType.end),
         if (!_bottomViewTabletConfirmationButtonsOverflow)
           const SizedBox(width: 12),
       ],
@@ -525,7 +455,7 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
             widget.confirmText,
             padding: const EdgeInsets.symmetric(horizontal: 20),
             onTap: () {
-              widget.selectDateRangeActionCallback?.call(_startDate, _endDate);
+              widget.selectDateRangeActionCallback?.call(_startDate);
               if (widget.autoClose) {
                 Navigator.maybeOf(context)?.maybePop();
               }
@@ -537,16 +467,14 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
   }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-    final pickerDateRange = args.value;
-    log('_MultipleViewDateRangePickerState::_onSelectionChanged():pickerDateRange: $pickerDateRange');
-    if (pickerDateRange is PickerDateRange) {
-      _startDate = args.value.startDate;
-      _endDate = args.value.endDate;
+    final selectedDate = args.value;
+    log('_MultipleViewDateRangePickerState::_onSelectionChanged():selectedDate: $selectedDate');
+    if (selectedDate is DateTime) {
+      _startDate = selectedDate;
       _updateDateTextInput();
 
       if (mounted) {
-        setState(() {
-        });
+        setState(() {});
       }
     }
   }
@@ -566,21 +494,6 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
     }
   }
 
-  void _onEndDateTextChanged(String value) {
-    log('_MultipleViewDateRangePickerState::_onEndDateTextChanged():value: $value');
-    try {
-      if (value.isNotEmpty && _isDateValid(value, dateTimePattern)) {
-        final endDate = DateFormat(dateTimePattern).parse(value);
-        _endDate = endDate;
-        _updateDatePickerSelection();
-      }
-    } catch (e) {
-      log('_MultipleViewDateRangePickerState::_onEndDateTextChanged():Error: $e');
-      _endDate = null;
-      _updateDatePickerSelection();
-    }
-  }
-
   bool _isDateValid(String input, String format) {
     try {
       final DateTime dateTime = DateFormat(format).parseStrict(input);
@@ -592,9 +505,8 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
     }
   }
 
-
   Future<void> _updateDatePickerSelection() async {
-    _datePickerController.selectedRange = PickerDateRange(_startDate, _endDate);
+    _datePickerController.selectedDate = _startDate;
     _datePickerController.displayDate = _startDate;
   }
 
@@ -609,25 +521,12 @@ class _MultipleViewDateRangePickerState extends State<MultipleViewDateRangePicke
     } else {
       _startDateInputController.clear();
     }
-    if (_endDate != null) {
-      final endDateString = DateFormat(dateTimePattern).format(_endDate!);
-      _endDateInputController.value = TextEditingValue(
-          text: endDateString,
-          selection: TextSelection(
-              baseOffset: endDateString.length,
-              extentOffset: endDateString.length));
-    } else {
-      _endDateInputController.clear();
-    }
   }
 
   @override
   void dispose() {
     _denounceStartDate.cancel();
-    _denounceEndDate.cancel();
     _startDateInputController.dispose();
-    _endDateInputController.dispose();
-    _datePickerController.dispose();
     super.dispose();
   }
 }

@@ -85,7 +85,6 @@ class ProfileImageWidget extends StatelessWidget {
         GestureDetector(
           onTap: () async {
             await controller.pickImage();
-            // Refresh UI after picking the image
             (context as Element).markNeedsBuild();
           },
           child: CircleAvatar(
@@ -103,14 +102,12 @@ class ProfileImageWidget extends StatelessWidget {
                 : null,
           ),
         ),
-        // Edit Icon at the bottom-right corner
         Positioned(
           bottom: 8,
           right: 8,
           child: GestureDetector(
             onTap: () async {
               await controller.pickImage();
-              // Refresh UI after picking the image
               (context as Element).markNeedsBuild();
             },
             child: const CircleAvatar(

@@ -22,20 +22,15 @@ class _AddTaskFormState extends State<AddTaskForm> {
     });
   }
 
-  void rebuild(BuildContext context) {
-    BlocProvider.of<TaskCubit>(context).fetchAllTasks();
-  }
-
   void updatePriority(String newPriority) {
     setState(() {
       priority = newPriority;
     });
   }
 
-  void updateDate(String fdate, String ldate) {
+  void updateDate(String fdate) {
     setState(() {
       firstDate = fdate;
-      lastDate = ldate;
     });
   }
 
@@ -64,8 +59,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
 
   @override
   Widget build(BuildContext context) {
-    rebuild(context);
-
     return Form(
       autovalidateMode: autoValidate,
       key: formKey,
@@ -159,11 +152,17 @@ class _AddTaskFormState extends State<AddTaskForm> {
                           isDone: false,
                         );
                         BlocProvider.of<AddTaskCubit>(context).addTask(task);
-                        rebuild(context);
+                        BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+
+                        // Navigator.pop(context);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => HomeView(),
+                        //   ),
+                        // );
                       } else {
                         setState(() {
-                          rebuild(context);
-
                           autoValidate = AutovalidateMode.always;
                         });
                       }

@@ -38,12 +38,21 @@ class TaskBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         margin: const EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.grey.shade300),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Color(0xFF2C2C2E)
+              : Colors.white,
+          border: Border.all(
+              color: isOverdue(task)
+                  ? Color(0xFFE57373)
+                  : Theme.of(context).brightness == Brightness.dark
+                      ? Color(0xFF3E3E41)
+                      : Colors.grey.shade300),
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black.withOpacity(0.2)
+                  : Colors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 2,
               offset: const Offset(0, 1),
@@ -59,13 +68,18 @@ class TaskBody extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.calendar_today,
-                      size: 14, color: Colors.grey.shade600),
+                      size: 14,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.grey.shade600),
                   const SizedBox(width: 4),
                   Text(
                     task.firstDate.split(' ')[0],
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.grey.shade600,
                     ),
                   ),
                   const SizedBox(width: 12)

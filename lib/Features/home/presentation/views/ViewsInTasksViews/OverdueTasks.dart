@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/task_body.dart';
+import 'package:to_do/Features/home/presentation/views/widgets/task_views_list.dart';
+import 'package:to_do/constants.dart';
 
 class OverdueTasksView extends StatelessWidget {
   const OverdueTasksView({super.key});
@@ -18,19 +20,7 @@ class OverdueTasksView extends StatelessWidget {
       child: Scaffold(
         body: BlocBuilder<TaskCubit, TaskState>(
           builder: (context, state) {
-            List<TaskModel> tasks =
-                BlocProvider.of<TaskCubit>(context).fetchAllTasks();
-            List<TaskModel> overdueTasks = [];
-
-            // for (int i = 0; i < tasks.length; i++) {
-            //   DateTime taskDate = DateTime.parse(tasks[i].firstDate);
-            //   DateTime today = DateTime.now();
-            //   if (taskDate.isBefore(today)) {
-            //     print('${taskDate} now : ${today}');
-
-            //     overdueTasks.add(tasks[i]);
-            //   }
-            // }
+            List<TaskModel> overdueTasks = OverdueTasksLogic(context);
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -49,7 +39,7 @@ class OverdueTasksView extends StatelessWidget {
                             ],
                           );
                         }
-                        return TaskBody(task: tasks[index]);
+                        return TaskBody(task: overdueTasks[index]);
                       },
                     ),
             );
@@ -57,5 +47,17 @@ class OverdueTasksView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<TaskModel> OverdueTasksLogic(BuildContext context) {
+    List<TaskModel> tasks = BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+    List<TaskModel> overdueTasks = [];
+
+    for (int i = 0; i < tasks.length; i++) {
+      if (isOverdue(tasks[i]) && !tasks[i].isDone) {
+        overdueTasks.add(tasks[i]);
+      }
+    }
+    return overdueTasks;
   }
 }

@@ -48,8 +48,8 @@ class MainApp extends StatelessWidget {
         theme: theme,
         themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
-        // home: const onboarding(),
-        home: TasksView(),
+        home: const onboarding(),
+        // home: TasksView(),
       ),
       initial: savedThemeMode ?? AdaptiveThemeMode.light,
     );

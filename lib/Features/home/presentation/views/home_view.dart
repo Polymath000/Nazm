@@ -31,7 +31,8 @@ class _HomeViewState extends State<HomeView> {
       bottomNavigationBar: CurvedNavigationBar(
         height: 60,
         animationCurve: Curves.easeInOut,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.transparent,
+        // Theme.of(context).scaffoldBackgroundColor,
         buttonBackgroundColor: const Color.fromARGB(255, 44, 101, 187),
         color: const Color.fromARGB(255, 44, 101, 187),
         animationDuration: const Duration(milliseconds: 350),

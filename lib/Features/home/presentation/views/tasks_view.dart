@@ -32,6 +32,7 @@ class _TasksViewState extends State<TasksView> {
               enableFeedback: true,
               child: const Icon(Icons.add_task_sharp),
               onPressed: () {
+                BlocProvider.of<TaskCubit>(context).fetchAllTasks();
                 showModalBottomSheet(
                   barrierLabel: 'Task',
                   isScrollControlled: true,
@@ -43,7 +44,8 @@ class _TasksViewState extends State<TasksView> {
               }),
           body: taskViews[_selectedIndex]['View'],
           drawer: Drawer(
-            width: MediaQuery.of(context).size.width / 1.1,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            width: MediaQuery.of(context).size.width / 1.3,
             child: Container(
               padding: EdgeInsets.only(right: 10),
               child: Column(
@@ -94,7 +96,6 @@ class _TasksViewState extends State<TasksView> {
                             title: taskViews[index]['title'],
                             icon: taskViews[index]['icon'],
                             index: index,
-                            numOftasks: taskViews[index]['numOftasks'],
                             selectedIndex: _selectedIndex,
                             context: context);
                       },
@@ -113,7 +114,6 @@ class _TasksViewState extends State<TasksView> {
       {required String title,
       required IconData icon,
       required int index,
-      required int numOftasks,
       required int selectedIndex,
       required BuildContext context}) {
     return ListTile(
@@ -129,7 +129,6 @@ class _TasksViewState extends State<TasksView> {
         });
         _scaffoldKey.currentState!.closeDrawer();
       },
-      trailing: Text(numOftasks.toString()),
     );
   }
 }

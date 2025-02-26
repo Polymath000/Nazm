@@ -18,14 +18,26 @@ class _TaskRowState extends State<TaskRow> {
   TaskCubit? _taskCubit;
 
   Color getPriorityColor() {
-    if (widget.task.priority.contains('High')) {
-      return Colors.red;
-    } else if (widget.task.priority.contains('Meduim')) {
-      return Colors.yellow;
-    } else if (widget.task.priority.contains('Low')) {
-      return Colors.blue;
+    if (Theme.of(context).brightness == Brightness.dark) {
+      // Dark mode colors
+      if (widget.task.priority.contains('High')) {
+        return Color(0xFFFF6B6B); // Softer red
+      } else if (widget.task.priority.contains('Meduim')) {
+        return Color(0xFFFFD93D); // Warmer yellow
+      } else if (widget.task.priority.contains('Low')) {
+        return Color(0xFF4DABF7); // Lighter blue
+      }
+      return Colors.grey.shade400;
     } else {
-      return Colors.grey;
+      // Light mode colors
+      if (widget.task.priority.contains('High')) {
+        return Color(0xFFDC3545); // Deeper red
+      } else if (widget.task.priority.contains('Meduim')) {
+        return Color(0xFFFFC107); // Amber
+      } else if (widget.task.priority.contains('Low')) {
+        return Color(0xFF0D6EFD); // Primary blue
+      }
+      return Colors.grey.shade600;
     }
   }
 
@@ -56,7 +68,7 @@ class _TaskRowState extends State<TaskRow> {
               setState(() {
                 isCompleted = !isCompleted;
                 widget.task.isDone = isCompleted;
-                Future.delayed(const Duration(seconds: 2), () {
+                Future.delayed(const Duration(seconds: 1), () {
                   if (mounted) {
                     _taskCubit?.fetchAllTasks();
                   }
@@ -66,7 +78,13 @@ class _TaskRowState extends State<TaskRow> {
             },
             icon: Icon(
               isCompleted ? Icons.check_circle : Icons.circle_outlined,
-              color: isCompleted ? Colors.green : Colors.grey,
+              color: isCompleted
+                  ? Theme.of(context).brightness == Brightness.dark
+                      ? Color(0xFF4CAF50) // Lighter green for dark mode
+                      : Color(0xFF2E7D32) // Darker green for light mode
+                  : Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade500
+                      : Colors.grey.shade400,
               size: 28,
             ),
           ),
@@ -82,7 +100,9 @@ class _TaskRowState extends State<TaskRow> {
                     decoration: isCompleted
                         ? TextDecoration.lineThrough
                         : TextDecoration.none,
-                    color: isCompleted ? Colors.grey : Colors.black87,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black87,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
