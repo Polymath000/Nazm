@@ -5,6 +5,7 @@ import 'package:to_do/Features/onboarding/presentation/views/Widgets/custom_butt
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:to_do/constants.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -54,7 +55,12 @@ class _EditProfileState extends State<EditProfile> {
                 width: MediaQuery.sizeOf(context).width / 1.9,
                 child: CustomButtom(
                   text: "Save",
-                  onPressed: () {
+                  onPressed: () async {
+                    if (_imageController.selectedImage != null) {
+                      await _imageController._saveImagePath(
+                        _imageController.selectedImage!.path,
+                      );
+                    }
                     Navigator.pop(context);
                   },
                 ),
@@ -81,7 +87,6 @@ class ProfileImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Main CircleAvatar
         GestureDetector(
           onTap: () async {
             await controller.pickImage();
@@ -130,8 +135,6 @@ class ProfileImageController {
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
   static const String imageKey = 'selected_image_path';
-
-  // Load the saved image path from SharedPreferences
   Future<void> loadSavedImage() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? savedImagePath = prefs.getString(imageKey);
@@ -140,23 +143,25 @@ class ProfileImageController {
     }
   }
 
-  // Pick an image and save its path
   Future<void> pickImage() async {
     try {
       final XFile? pickedImage =
           await _picker.pickImage(source: ImageSource.gallery);
+      // print('Picked image: ${pickedImage?.path}');
       if (pickedImage != null) {
         selectedImage = File(pickedImage.path);
         await _saveImagePath(pickedImage.path);
+        // userImage = pickedImage.path;
       }
     } catch (e) {
-      print('Error picking image: $e');
+      // print('Error picking image: $e');
     }
   }
 
-  // Save the selected image path to SharedPreferences
   Future<void> _saveImagePath(String path) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(imageKey, path);
+    userImage = path;
+    // print('Saved image path: $path');
   }
 }

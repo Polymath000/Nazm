@@ -32,8 +32,11 @@ class CustomTextField extends StatelessWidget {
         enabled: enabled,
         decoration: InputDecoration(
           helperStyle: TextStyle(color: color),
-          hintText: 'example@no.yes',
-          labelStyle: TextStyle(color: color),
+          labelStyle: TextStyle(
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
+          ),
           floatingLabelStyle: TextStyle(color: color),
           disabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(

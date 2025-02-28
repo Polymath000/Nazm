@@ -5,24 +5,47 @@ import 'package:to_do/Features/home/presentation/views/widgets/app_bar_of_profil
 import 'package:to_do/Features/onboarding/presentation/views/Widgets/custom_buttom.dart';
 import 'package:to_do/constants.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   ProfileView({
     super.key,
   });
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  final ProfileImageController _imageController = ProfileImageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeProfileImage();
+  }
+
+  Future<void> _initializeProfileImage() async {
+    await _imageController.loadSavedImage();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    _initializeProfileImage();
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(23.0),
         child: Column(
           children: [
             const AppBarOfProfile(),
-            const CircleAvatar(
+            // ProfileImageWidget(controller: _imageController),
+            CircleAvatar(
               maxRadius: 77,
               backgroundColor: Color.fromARGB(255, 167, 155, 155),
               child: CircleAvatar(
                 maxRadius: 75,
-                backgroundImage: AssetImage(testImage),
+                backgroundImage: _imageController.selectedImage != null
+                  ? FileImage(_imageController.selectedImage!)
+                  : AssetImage(userImage) as ImageProvider,
               ),
             ),
             const SizedBox(
@@ -33,12 +56,11 @@ class ProfileView extends StatelessWidget {
               height: 55,
               child: CustomButtom(
                 text: "Edit Profile",
-                
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>  EditProfile(),
+                        builder: (context) => EditProfile(),
                       ));
                 },
               ),

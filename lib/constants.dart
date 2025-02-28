@@ -3,8 +3,8 @@ import 'package:to_do/Features/home/data/task_model.dart';
 
 const kPrimaryPriority = "No Priority";
 const kTaskBox = 'tasks';
-const testFullName = 'Abdelrahman Khaled Saad Eldin';
-const testImage = 'assets/images/me.png';
+const testFullName = 'Host';
+String userImage = 'assets/images/Unknown_person.jpg';
 const kPrimaryColor = 0xff086BFF;
 const kSmallLogo = "assets/images/small.png";
 const kMedLogo = "assets/images/med.png";

@@ -11,8 +11,7 @@ class TaskCubit extends Cubit<TaskState> {
   List<TaskModel> tasks = [];
 
   List<TaskModel> fetchAllTasks() {
-    var taskBox = Hive.box<TaskModel>(kTaskBox);
-    tasks = taskBox.values.toList();
+    tasks = Hive.box<TaskModel>(kTaskBox).values.toList();
     emit(TaskSuccess(tasks: tasks));
     return tasks;
   }

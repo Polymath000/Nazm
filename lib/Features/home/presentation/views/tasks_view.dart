@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
+import 'package:to_do/Features/home/presentation/views/edit_profile.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/show_model_button_sheet.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/task_views_list.dart';
 import '../../../../constants.dart';
@@ -16,6 +17,28 @@ class TasksView extends StatefulWidget {
 class _TasksViewState extends State<TasksView> {
   int _selectedIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final ProfileImageController _imageController = ProfileImageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeProfileImage();
+  }
+
+  Future<void> _initializeProfileImage() async {
+    await _imageController.loadSavedImage();
+    setState(() {});
+  }
+
+  void GoToSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Settings(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +78,10 @@ class _TasksViewState extends State<TasksView> {
                       children: [
                         CircleAvatar(
                           maxRadius: 30,
-                          backgroundImage: AssetImage(testImage),
+                          backgroundImage:
+                              _imageController.selectedImage != null
+                                  ? FileImage(_imageController.selectedImage!)
+                                  : AssetImage(userImage) as ImageProvider,
                         ),
                         SizedBox(
                           width: 10,
@@ -71,14 +97,7 @@ class _TasksViewState extends State<TasksView> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Settings(),
-                              ),
-                            );
-                          },
+                          onPressed: GoToSettings,
                           icon: const Icon(
                             Icons.settings,
                             color: Colors.grey,
