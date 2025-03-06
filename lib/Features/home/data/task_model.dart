@@ -14,12 +14,9 @@ class TaskModel extends HiveObject {
   String firstDate;
   @HiveField(4)
   String priority;
-  @HiveField(5)
-  String category;
   TaskModel({
     required this.firstDate,
     this.priority = kPrimaryPriority,
-    required this.category,
     required this.title,
     required this.description,
     this.isDone = false,
@@ -27,5 +24,5 @@ class TaskModel extends HiveObject {
 
   @override
   String toString() =>
-      'TaskModel(title: $title, description: $description, isDone: $isDone, firstDate: $firstDate, priority: $priority, category: $category)';
+      'TaskModel(title: $title, description: $description, isDone: $isDone, firstDate: $firstDate, priority: $priority,)';
 }

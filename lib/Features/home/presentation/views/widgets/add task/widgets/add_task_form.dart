@@ -4,7 +4,6 @@ import 'package:to_do/Features/home/data/cubit/add_task/add_task_cubit.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add%20task/sample_date_picker.dart';
-import 'package:to_do/Features/home/presentation/views/widgets/category_drop_down.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/priority.dart';
 import 'package:to_do/constants.dart';
 
@@ -16,12 +15,6 @@ class AddTaskForm extends StatefulWidget {
 }
 
 class _AddTaskFormState extends State<AddTaskForm> {
-  void updateCategory(String newCategory) {
-    setState(() {
-      category = newCategory;
-    });
-  }
-
   void updatePriority(String newPriority) {
     setState(() {
       priority = newPriority;
@@ -36,7 +29,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
 
   late String title;
   late String description = "";
-  late String category = "Personal";
   late String priority = kPrimaryPriority;
   late String firstDate = DateTime.now().toString();
   bool descriptionIsVisible = false;
@@ -148,9 +140,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     onPrioritySelected: updatePriority,
                     color: getPriorityColor(),
                   ),
-                  CategoryDropDown(
-                    onCategorySelected: updateCategory,
-                  ),
                   IconButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
@@ -158,7 +147,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         var task = TaskModel(
                           firstDate: firstDate,
                           priority: priority,
-                          category: category,
                           title: title,
                           description: description,
                           isDone: false,

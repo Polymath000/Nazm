@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add%20task/sample_date_picker.dart';
-import 'package:to_do/Features/home/presentation/views/widgets/category_drop_down.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/priority.dart';
 
 class EditTask extends StatefulWidget {
@@ -20,7 +19,6 @@ class _EditTaskState extends State<EditTask> {
   late String description;
   late bool descriptionIsVisible;
   late String priority;
-  late String category;
   late String title;
   final GlobalKey<FormState> formKey = GlobalKey();
   AutovalidateMode autoValidate = AutovalidateMode.disabled;
@@ -35,7 +33,6 @@ class _EditTaskState extends State<EditTask> {
   void initState() {
     super.initState();
     firstDate = widget.task.firstDate;
-    category = widget.task.category;
     description = widget.task.description;
     priority = widget.task.priority;
     isCompleted = widget.task.isDone;
@@ -70,7 +67,6 @@ class _EditTaskState extends State<EditTask> {
       }
       formKey.currentState!.save();
       widget.task.isDone = isCompleted;
-      widget.task.category = category;
       widget.task.firstDate = firstDate;
       widget.task.priority = priority;
       widget.task.title = title;
@@ -109,12 +105,6 @@ class _EditTaskState extends State<EditTask> {
       if (isCompleted) {
         Navigator.pop(context);
       }
-    });
-  }
-
-  void updateCategory(String newCategory) {
-    setState(() {
-      category = newCategory;
     });
   }
 
@@ -260,9 +250,6 @@ class _EditTaskState extends State<EditTask> {
                     color: getPriorityColor(),
                   ),
                   const SizedBox(width: 20),
-                  CategoryDropDown(
-                    onCategorySelected: updateCategory,
-                  ),
                   SizedBox(width: 120),
                   IconButton(
                     onPressed: _isSaving ? null : _saveTask,

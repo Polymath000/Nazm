@@ -19,7 +19,6 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
     return TaskModel(
       firstDate: fields[3] as String,
       priority: fields[4] as String,
-      category: fields[5] as String,
       title: fields[0] as String,
       description: fields[1] as String,
       isDone: fields[2] as bool,
@@ -29,7 +28,7 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
   @override
   void write(BinaryWriter writer, TaskModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -39,9 +38,7 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
       ..writeByte(3)
       ..write(obj.firstDate)
       ..writeByte(4)
-      ..write(obj.priority)
-      ..writeByte(5)
-      ..write(obj.category);
+      ..write(obj.priority);
   }
 
   @override
