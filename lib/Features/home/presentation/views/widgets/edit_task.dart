@@ -1,5 +1,11 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
+import 'package:to_do/Features/home/presentation/views/widgets/add%20task/sample_date_picker.dart';
+import 'package:to_do/Features/home/presentation/views/widgets/category_drop_down.dart';
+import 'package:to_do/Features/home/presentation/views/widgets/priority.dart';
 
 class EditTask extends StatefulWidget {
   EditTask({super.key, required this.task});
@@ -9,32 +15,266 @@ class EditTask extends StatefulWidget {
 }
 
 class _EditTaskState extends State<EditTask> {
+  late bool isCompleted;
+  late String firstDate;
+  late String description;
+  late bool descriptionIsVisible;
+  late String priority;
+  late String category;
+  late String title;
+  final GlobalKey<FormState> formKey = GlobalKey();
+  AutovalidateMode autoValidate = AutovalidateMode.disabled;
+
+  // Add TextEditing Controllers
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
+
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    firstDate = widget.task.firstDate;
+    category = widget.task.category;
+    description = widget.task.description;
+    priority = widget.task.priority;
+    isCompleted = widget.task.isDone;
+    title = widget.task.title;
+    descriptionIsVisible = widget.task.description.isNotEmpty;
+
+    // Initialize controllers
+    _titleController = TextEditingController(text: title);
+    _descriptionController = TextEditingController(text: description);
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveTask() async {
+    if (_isSaving) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      if (!formKey.currentState!.validate()) {
+        setState(() {
+          autoValidate = AutovalidateMode.always;
+        });
+        return;
+      }
+      formKey.currentState!.save();
+      widget.task.isDone = isCompleted;
+      widget.task.category = category;
+      widget.task.firstDate = firstDate;
+      widget.task.priority = priority;
+      widget.task.title = title;
+      widget.task.description = description;
+      await widget.task.save();
+
+      Navigator.pop(context);
+
+      context.read<TaskCubit>().fetchAllTasks();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Task updated successfully')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Error updating task: $e'),
+      //     backgroundColor: Colors.red,
+      //   ),
+      // );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
+  void _handleTaskCompletion() async {
+    setState(() {
+      isCompleted = !isCompleted;
+    });
+    _saveTask();
+    Future.delayed(Duration(seconds: 1), () {
+      if (isCompleted) {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  void updateCategory(String newCategory) {
+    setState(() {
+      category = newCategory;
+    });
+  }
+
+  void updatePriority(String newPriority) {
+    setState(() {
+      priority = newPriority;
+    });
+  }
+
+  void updateDate(String fdate) {
+    setState(() {
+      firstDate = fdate;
+    });
+  }
+
+  void toggleDescription() {
+    setState(() {
+      descriptionIsVisible = !descriptionIsVisible;
+    });
+  }
+
+  Color getPriorityColor() {
+    if (priority.contains('High')) {
+      return Colors.red;
+    } else if (priority.contains('Medium')) {
+      return Colors.yellow;
+    } else if (priority.contains('Low')) {
+      return Colors.blue;
+    } else {
+      return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Edit Task"),
-      ),
-      body: Column(
-        children: [
-          TextField(
-            style: TextStyle(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black),
-            controller: TextEditingController(text: widget.task.title),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
+    return BlocProvider(
+      create: (context) => TaskCubit(),
+      child: Form(
+        autovalidateMode: autoValidate,
+        key: formKey,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.55,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(children: [
+                IconButton(
+                  onPressed: _handleTaskCompletion,
+                  icon: Icon(
+                    isCompleted ? Icons.check_circle : Icons.circle_outlined,
+                    color: isCompleted
+                        ? Theme.of(context).brightness == Brightness.dark
+                            ? const Color(0xFF4CAF50)
+                            : const Color(0xFF2E7D32)
+                        : Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey.shade500
+                            : Colors.grey.shade400,
+                    size: 28,
+                  ),
+                ),
+                Expanded(
+                  child: TextFormField(
+                    controller: _titleController,
+                    validator: (value) {
+                      if (value?.isEmpty ?? true) {
+                        return 'Title is required';
+                      }
+                      return null;
+                    },
+                    minLines: 1,
+                    maxLines: 3,
+                    autofocus: true,
+                    onSaved: (value) {
+                      title = value!;
+                    },
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                      decoration: isCompleted
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                    ),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ]),
+              Visibility(
+                visible: descriptionIsVisible,
+                child: TextFormField(
+                  controller: _descriptionController,
+                  minLines: 1,
+                  maxLines: 3,
+                  onSaved: (value) {
+                    description = value ?? '';
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Description',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    focusedBorder:
+                        OutlineInputBorder(borderSide: BorderSide.none),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
                 ),
               ),
-              hintText: "Enter Task Title",
-            ),
+              GestureDetector(
+                onTap: () {
+                  ShowDialog(
+                      context: context,
+                      onDateSelected: updateDate,
+                      startDateSelected: DateTime.parse(firstDate));
+                },
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Icon(Icons.calendar_today, size: 23, color: Colors.red),
+                    const SizedBox(width: 4),
+                    Text(
+                      formatDate(DateTime.parse(firstDate),
+                          [d, '-', MM, '-', yyyy]).toString(),
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Priority(
+                    onPrioritySelected: updatePriority,
+                    color: getPriorityColor(),
+                  ),
+                  const SizedBox(width: 20),
+                  CategoryDropDown(
+                    onCategorySelected: updateCategory,
+                  ),
+                  SizedBox(width: 120),
+                  IconButton(
+                    onPressed: _isSaving ? null : _saveTask,
+                    icon: _isSaving
+                        ? const CircularProgressIndicator()
+                        : const Icon(Icons.arrow_forward_rounded),
+                  ),
+                ],
+              )
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

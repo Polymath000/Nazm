@@ -10,6 +10,7 @@ dependencies:
   adaptive_theme: ^3.6.0
   audioplayers: ^6.2.0
   curved_navigation_bar: ^1.0.6
+  date_format: ^2.0.9
   debounce_throttle: ^2.0.0
   dropdown_button2: ^2.3.9
   firebase_auth: ^5.3.1

@@ -54,6 +54,7 @@ class _TasksViewState extends State<TasksView> {
               tooltip: 'Add Task',
               enableFeedback: true,
               child: const Icon(Icons.add_task_sharp),
+              autofocus: true,
               onPressed: () {
                 BlocProvider.of<TaskCubit>(context).fetchAllTasks();
                 showModalBottomSheet(

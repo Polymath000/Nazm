@@ -39,7 +39,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
   late String category = "Personal";
   late String priority = kPrimaryPriority;
   late String firstDate = DateTime.now().toString();
-  late String lastDate = DateTime.now().toString();
   bool descriptionIsVisible = false;
   DateTime? startDateSelected, endDateSelected;
   final GlobalKey<FormState> formKey = GlobalKey();
@@ -128,8 +127,22 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     },
                     icon: const Icon(Icons.description),
                   ),
-                  SampleDatePicker(
-                    onDateSelected: updateDate,
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.calendar_month_outlined),
+                          onPressed: () {
+                            ShowDialog(
+                                context: context,
+                                onDateSelected: updateDate,
+                                startDateSelected: startDateSelected);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   Priority(
                     onPrioritySelected: updatePriority,
@@ -144,7 +157,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         formKey.currentState!.save();
                         var task = TaskModel(
                           firstDate: firstDate,
-                          lastDate: lastDate,
                           priority: priority,
                           category: category,
                           title: title,
@@ -153,14 +165,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         );
                         BlocProvider.of<AddTaskCubit>(context).addTask(task);
                         BlocProvider.of<TaskCubit>(context).fetchAllTasks();
-
-                        // Navigator.pop(context);
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => HomeView(),
-                        //   ),
-                        // );
                       } else {
                         setState(() {
                           autoValidate = AutovalidateMode.always;
