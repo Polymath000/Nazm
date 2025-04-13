@@ -8,17 +8,30 @@ class TodayTasksView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<TaskCubit, TaskState>(
-        builder: (context, state) {
-          final todayTasks = BlocProvider.of<TaskCubit>(context)
-              .fetchAllTasks()
-              .where((task) => 
-                task.firstDate.split(' ')[0] == DateTime.now().toString().split(' ')[0])
-              .toList()
-            ..sort((a, b) => a.isDone == b.isDone ? 0 : a.isDone ? 1 : -1);
+    return BlocBuilder<TaskCubit, TaskState>(
+      builder: (context, state) {
+        final todayTasks = context
+            .read<TaskCubit>()
+            .fetchAllTasks()
+            .where((task) =>
+                task.firstDate.split(' ')[0] ==
+                DateTime.now().toString().split(' ')[0])
+            .toList()
+          ..sort((a, b) => a.isDone == b.isDone
+              ? 0
+              : a.isDone
+                  ? 1
+                  : -1);
 
-          return Padding(
+        return RefreshIndicator(
+          displacement: 100,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+          onRefresh: () async {
+            context.read<TaskCubit>().fetchAllTasks();
+          },
+          child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: todayTasks.isEmpty
                 ? const Center(child: Text('No tasks yet!'))
@@ -34,9 +47,9 @@ class TodayTasksView extends StatelessWidget {
                       );
                     },
                   ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

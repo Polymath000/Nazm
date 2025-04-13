@@ -23,8 +23,12 @@ class AllTasksView extends StatelessWidget {
             })
             ..sort((a, b) =>
                 b.firstDate.split(' ')[0].compareTo(a.firstDate.split(' ')[0]));
-                
+
           return RefreshIndicator(
+            displacement: 100,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
             onRefresh: () async {
               BlocProvider.of<TaskCubit>(context).fetchAllTasks();
             },

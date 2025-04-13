@@ -22,6 +22,18 @@ class Calender extends StatefulWidget {
 
 class _CalenderState extends State<Calender> {
   int index = 2;
+  late DateTime selectedDate;
+  void updateDate(DateTime date) {
+    setState(() {
+      selectedDate = date;
+    });
+  }
+
+  @override
+  void initState() {
+    selectedDate = DateTime.now();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,19 +49,6 @@ class _CalenderState extends State<Calender> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        index = 0;
-                      });
-                    },
-                    child: Text(
-                      'Day',
-                      style: TextStyle(
-                          color: index == 0 ? Colors.blue : Colors.grey,
-                          fontSize: 20),
-                    ),
-                  ),
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -85,7 +84,7 @@ class _CalenderState extends State<Calender> {
                               borderRadius: BorderRadius.circular(16)),
                           context: context,
                           builder: (context) {
-                            return const ShowModelButtonSheet();
+                            return ShowModelButtonSheet(date: selectedDate,);
                           });
                     },
                   ),
@@ -97,6 +96,7 @@ class _CalenderState extends State<Calender> {
               child: CalenderWidget(
                 key: ValueKey<int>(index),
                 index: index,
+                updateDate: updateDate,
               ),
             ),
           ],

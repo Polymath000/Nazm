@@ -19,11 +19,19 @@ class _TasksViewState extends State<TasksView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final ProfileImageController _imageController = ProfileImageController();
+  late final TaskCubit _taskCubit;
 
   @override
   void initState() {
     super.initState();
+    _taskCubit = TaskCubit();
     _initializeProfileImage();
+  }
+
+  @override
+  void dispose() {
+    _taskCubit.close();
+    super.dispose();
   }
 
   Future<void> _initializeProfileImage() async {
@@ -42,8 +50,8 @@ class _TasksViewState extends State<TasksView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TaskCubit(),
+    return BlocProvider.value(
+      value: _taskCubit,
       child: Builder(
         builder: (context) => Scaffold(
           key: _scaffoldKey,
@@ -53,19 +61,19 @@ class _TasksViewState extends State<TasksView> {
           floatingActionButton: FloatingActionButton(
               tooltip: 'Add Task',
               enableFeedback: true,
-              child: const Icon(Icons.add_task_sharp),
               autofocus: true,
               onPressed: () {
-                BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+                _taskCubit.fetchAllTasks();
                 showModalBottomSheet(
                   barrierLabel: 'Task',
                   isScrollControlled: true,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16)),
                   context: context,
-                  builder: (context) => const ShowModelButtonSheet(),
+                  builder: (context) => ShowModelButtonSheet(date: DateTime.now(),),
                 );
-              }),
+              },
+              child: const Icon(Icons.add_task_sharp)),
           body: taskViews[_selectedIndex]['View'],
           drawer: Drawer(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -145,7 +153,7 @@ class _TasksViewState extends State<TasksView> {
       onTap: () {
         setState(() {
           _selectedIndex = index;
-          BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+          _taskCubit.fetchAllTasks();
         });
         _scaffoldKey.currentState!.closeDrawer();
       },

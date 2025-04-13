@@ -8,8 +8,8 @@ import 'package:to_do/Features/home/presentation/views/widgets/priority.dart';
 import 'package:to_do/constants.dart';
 
 class AddTaskForm extends StatefulWidget {
-  const AddTaskForm({super.key});
-
+  AddTaskForm({super.key, required this.date});
+  DateTime date;
   @override
   State<AddTaskForm> createState() => _AddTaskFormState();
 }
@@ -21,18 +21,10 @@ class _AddTaskFormState extends State<AddTaskForm> {
     });
   }
 
-  void updateDate(String fdate) {
-    setState(() {
-      firstDate = fdate;
-    });
-  }
-
   late String title;
   late String description = "";
   late String priority = kPrimaryPriority;
-  late String firstDate = DateTime.now().toString();
   bool descriptionIsVisible = false;
-  DateTime? startDateSelected, endDateSelected;
   final GlobalKey<FormState> formKey = GlobalKey();
   AutovalidateMode autoValidate = AutovalidateMode.disabled;
 
@@ -124,14 +116,35 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.calendar_month_outlined),
-                          onPressed: () {
-                            ShowDialog(
-                                context: context,
-                                onDateSelected: updateDate,
-                                startDateSelected: startDateSelected);
-                          },
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.calendar_month_outlined),
+                              onPressed: () async {
+                                await ShowDialog(
+                                  context: context,
+                                  startDateSelected: widget.date,
+                                  onDateSelected: (String newDate) {
+                                    print("New date selected: $newDate");
+                                    setState(() {
+                                      widget.date = DateTime.parse(newDate);
+                                    });
+                                  },
+                                );
+                              },
+                            ),
+                            Text(
+                              "${widget.date.day}-${widget.date.month}-${widget.date.year}",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black87,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -144,8 +157,10 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
+                        print(
+                            'date................................................................: ${widget.date}');
                         var task = TaskModel(
-                          firstDate: firstDate,
+                          firstDate: widget.date.toString(),
                           priority: priority,
                           title: title,
                           description: description,

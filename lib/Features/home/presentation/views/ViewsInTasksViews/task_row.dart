@@ -78,16 +78,10 @@ class _TaskRowState extends State<TaskRow> {
 
     try {
       await widget.task.save();
-      print('Task saved: ${widget.task.title}, isDone: $isCompleted');
-
-      if (mounted) {
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) {
-            _taskCubit?.fetchAllTasks();
-            print('Tasks fetched: ${_taskCubit?.tasks}');
-          }
-        });
-      }
+      Future.delayed(const Duration(seconds: 1), () {
+        _taskCubit?.fetchAllTasks();
+        print('Tasks fetched: ${_taskCubit?.tasks}');
+      });
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

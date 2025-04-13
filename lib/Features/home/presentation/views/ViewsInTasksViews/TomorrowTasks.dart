@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
-import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/task_body.dart';
-import 'package:to_do/Features/home/presentation/views/widgets/task_views_list.dart';
 
 class TomorrowTasksView extends StatelessWidget {
   const TomorrowTasksView({super.key});
@@ -27,22 +25,31 @@ class TomorrowTasksView extends StatelessWidget {
               .toList()
             ..sort((a, b) => a.isDone == b.isDone ? 0 : a.isDone ? 1 : -1);
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: tomorrowTasks.isEmpty
-                ? const Center(child: Text('No tasks yet!'))
-                : ListView.builder(
-                    itemCount: tomorrowTasks.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          TaskBody(task: tomorrowTasks[index]),
-                          if (index == tomorrowTasks.length - 1)
-                            const SizedBox(height: 60),
-                        ],
-                      );
-                    },
-                  ),
+          return RefreshIndicator(
+            displacement: 100,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+            onRefresh: () async {
+              BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              child: tomorrowTasks.isEmpty
+                  ? const Center(child: Text('No tasks yet!'))
+                  : ListView.builder(
+                      itemCount: tomorrowTasks.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            TaskBody(task: tomorrowTasks[index]),
+                            if (index == tomorrowTasks.length - 1)
+                              const SizedBox(height: 60),
+                          ],
+                        );
+                      },
+                    ),
+            ),
           );
         },
       ),

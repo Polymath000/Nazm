@@ -140,127 +140,125 @@ class _EditTaskState extends State<EditTask> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TaskCubit(),
-      child: Form(
-        autovalidateMode: autoValidate,
-        key: formKey,
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.55,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(children: [
-                IconButton(
-                  onPressed: _handleTaskCompletion,
-                  icon: Icon(
-                    isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                    color: isCompleted
-                        ? Theme.of(context).brightness == Brightness.dark
-                            ? const Color(0xFF4CAF50)
-                            : const Color(0xFF2E7D32)
-                        : Theme.of(context).brightness == Brightness.dark
-                            ? Colors.grey.shade500
-                            : Colors.grey.shade400,
-                    size: 28,
+    return Form(
+      autovalidateMode: autoValidate,
+      key: formKey,
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.55,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(children: [
+              IconButton(
+                onPressed: _handleTaskCompletion,
+                icon: Icon(
+                  isCompleted ? Icons.check_circle : Icons.circle_outlined,
+                  color: isCompleted
+                      ? Theme.of(context).brightness == Brightness.dark
+                          ? const Color(0xFF4CAF50)
+                          : const Color(0xFF2E7D32)
+                      : Theme.of(context).brightness == Brightness.dark
+                          ? Colors.grey.shade500
+                          : Colors.grey.shade400,
+                  size: 28,
+                ),
+              ),
+              Expanded(
+                child: TextFormField(
+                  controller: _titleController,
+                  validator: (value) {
+                    if (value?.isEmpty ?? true) {
+                      return 'Title is required';
+                    }
+                    return null;
+                  },
+                  minLines: 1,
+                  maxLines: 3,
+                  autofocus: true,
+                  onSaved: (value) {
+                    title = value!;
+                  },
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                    decoration: isCompleted
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+                  ),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
                   ),
                 ),
-                Expanded(
-                  child: TextFormField(
-                    controller: _titleController,
-                    validator: (value) {
-                      if (value?.isEmpty ?? true) {
-                        return 'Title is required';
-                      }
-                      return null;
-                    },
-                    minLines: 1,
-                    maxLines: 3,
-                    autofocus: true,
-                    onSaved: (value) {
-                      title = value!;
-                    },
+              ),
+            ]),
+            Visibility(
+              visible: descriptionIsVisible,
+              child: TextFormField(
+                controller: _descriptionController,
+                minLines: 1,
+                maxLines: 3,
+                onSaved: (value) {
+                  description = value ?? '';
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Description',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  focusedBorder:
+                      OutlineInputBorder(borderSide: BorderSide.none),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                ShowDialog(
+                    context: context,
+                    onDateSelected: updateDate,
+                    startDateSelected: DateTime.parse(firstDate));
+              },
+              child: Row(
+                children: [
+                  SizedBox(width: 10),
+                  Icon(Icons.calendar_today, size: 23, color: Colors.red),
+                  const SizedBox(width: 4),
+                  Text(
+                    formatDate(
+                            DateTime.parse(firstDate), [d, '-', MM, '-', yyyy])
+                        .toString(),
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       color: Theme.of(context).brightness == Brightness.dark
                           ? Colors.white
                           : Colors.black,
-                      decoration: isCompleted
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
                     ),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-              ]),
-              Visibility(
-                visible: descriptionIsVisible,
-                child: TextFormField(
-                  controller: _descriptionController,
-                  minLines: 1,
-                  maxLines: 3,
-                  onSaved: (value) {
-                    description = value ?? '';
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Description',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    focusedBorder:
-                        OutlineInputBorder(borderSide: BorderSide.none),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  ShowDialog(
-                      context: context,
-                      onDateSelected: updateDate,
-                      startDateSelected: DateTime.parse(firstDate));
-                },
-                child: Row(
-                  children: [
-                    SizedBox(width: 10),
-                    Icon(Icons.calendar_today, size: 23, color: Colors.red),
-                    const SizedBox(width: 4),
-                    Text(
-                      formatDate(DateTime.parse(firstDate),
-                          [d, '-', MM, '-', yyyy]).toString(),
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Priority(
-                    onPrioritySelected: updatePriority,
-                    color: getPriorityColor(),
-                  ),
-                  const SizedBox(width: 20),
-                  SizedBox(width: 120),
-                  IconButton(
-                    onPressed: _isSaving ? null : _saveTask,
-                    icon: _isSaving
-                        ? const CircularProgressIndicator()
-                        : const Icon(Icons.arrow_forward_rounded),
                   ),
                 ],
-              )
-            ],
-          ),
+              ),
+            ),
+            SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Priority(
+                  onPrioritySelected: updatePriority,
+                  color: getPriorityColor(),
+                ),
+                const SizedBox(width: 20),
+                SizedBox(width: 120),
+                IconButton(
+                  onPressed: _isSaving ? null : _saveTask,
+                  icon: _isSaving
+                      ? const CircularProgressIndicator()
+                      : const Icon(Icons.arrow_forward_rounded),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );

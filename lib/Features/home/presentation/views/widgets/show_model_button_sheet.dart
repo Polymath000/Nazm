@@ -7,7 +7,8 @@ import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add%20task/widgets/add_task_form.dart';
 
 class ShowModelButtonSheet extends StatefulWidget {
-  const ShowModelButtonSheet({super.key});
+  const ShowModelButtonSheet({super.key, required this.date});
+  final DateTime date;
   @override
   State<ShowModelButtonSheet> createState() => _ShowModelButtonSheetState();
 }
@@ -33,7 +34,9 @@ class _ShowModelButtonSheetState extends State<ShowModelButtonSheet> {
           builder: (context, state) {
             return LoadingProgressHUD(
               isLoading: state is AddTaskLoading,
-              child: AddTaskForm(),
+              child: AddTaskForm(
+                date: widget.date,
+              ),
             );
           },
         ),
