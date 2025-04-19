@@ -7,7 +7,7 @@ import 'package:to_do/Features/home/presentation/views/widgets/add%20task/sample
 import 'package:to_do/Features/home/presentation/views/widgets/priority.dart';
 
 class EditTask extends StatefulWidget {
-  EditTask({super.key, required this.task});
+  const EditTask({super.key, required this.task});
   final TaskModel task;
   @override
   State<EditTask> createState() => _EditTaskState();

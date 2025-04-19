@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add_task_buttom.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/app_bar_of_profile.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/calender_widget.dart';
@@ -9,7 +11,10 @@ class CalenderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Calender();
+    return BlocProvider(
+      create: (context) => TaskCubit(),
+      child: const Calender(),
+    );
   }
 }
 
@@ -84,7 +89,9 @@ class _CalenderState extends State<Calender> {
                               borderRadius: BorderRadius.circular(16)),
                           context: context,
                           builder: (context) {
-                            return ShowModelButtonSheet(date: selectedDate,);
+                            return ShowModelButtonSheet(
+                              date: selectedDate,
+                            );
                           });
                     },
                   ),
@@ -97,6 +104,7 @@ class _CalenderState extends State<Calender> {
                 key: ValueKey<int>(index),
                 index: index,
                 updateDate: updateDate,
+                today: selectedDate,
               ),
             ),
           ],

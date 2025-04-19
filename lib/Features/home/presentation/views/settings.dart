@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/Data/manager/signup_cubit/signup_cubit.dart';
 import 'package:to_do/Features/Auth/presentation/views/log_in_view.dart';
-import 'package:to_do/Features/Auth/presentation/views/sign_up_view.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/custom_buttom_mode.dart';
 import 'package:to_do/Features/onboarding/presentation/views/Widgets/custom_buttom.dart';
+import 'package:to_do/constants.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -90,18 +90,22 @@ class _SettingsState extends State<Settings> {
                     }
                   },
                   builder: (context, state) {
-                    return SizedBox(
-                      width: MediaQuery.sizeOf(context).width / 1.8,
-                      child: CustomButtom(
-                        text: "Log Out",
-                        onPressed: () {
-                          BlocProvider.of<SignupCubit>(context).signOut();
-                        },
+                    return Visibility(
+                      visible: isGuest,
+                      child: SizedBox(
+                        width: MediaQuery.sizeOf(context).width / 1.8,
+                        child: CustomButtom(
+                          text: "Log Out",
+                          onPressed: () {
+                            BlocProvider.of<SignupCubit>(context).signOut();
+                          },
+                        ),
                       ),
                     );
                   },
                 ),
               ),
+              // TODO: add buttom to signup and upload tasks to firebase
             ],
           ),
         ),

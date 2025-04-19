@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
-import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/task_body.dart';
 import 'package:to_do/constants.dart';
 

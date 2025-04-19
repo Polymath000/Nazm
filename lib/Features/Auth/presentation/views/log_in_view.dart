@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/Data/manager/login_cubit/login_cubit.dart';
-import 'package:to_do/Features/Auth/presentation/views/sign_up_view.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/loading_progress_h_u_d.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/login_form.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/Data/manager/signup_cubit/signup_cubit.dart';
-import 'package:to_do/Features/Auth/presentation/views/sign_up_view.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 
@@ -30,7 +29,7 @@ class _SignUpWithGoogleState extends State<SignUpWithGoogle> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>  HomeView(),
+                  builder: (context) => HomeView(),
                 ));
             ShowSnakBar(context, "I hope you enjoy our app.");
           } else if (state is SignupFailure) {

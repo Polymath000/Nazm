@@ -38,3 +38,5 @@ bool isOverdue(TaskModel Task) {
       todayYear < dateYear;
   return re;
 }
+
+bool isGuest = false;

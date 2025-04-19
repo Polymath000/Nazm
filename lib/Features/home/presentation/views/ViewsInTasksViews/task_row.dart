@@ -7,7 +7,7 @@ import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
 
 class TaskRow extends StatefulWidget {
-  TaskRow({Key? key, required this.task}) : super(key: key);
+  TaskRow({super.key, required this.task});
   TaskModel task;
 
   @override

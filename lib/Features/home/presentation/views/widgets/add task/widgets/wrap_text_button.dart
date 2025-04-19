@@ -16,7 +16,7 @@ class WrapTextButton extends StatelessWidget {
   final VoidCallback? onTap;
 
   const WrapTextButton(this.title,
-      {Key? key,
+      {super.key,
       this.textStyle,
       this.backgroundColor = ColorsUtils.colorPrimary,
       this.textColor = Colors.white,
@@ -27,8 +27,7 @@ class WrapTextButton extends StatelessWidget {
       this.maxWidth,
       this.padding,
       this.margin,
-      this.onTap})
-      : super(key: key);
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {

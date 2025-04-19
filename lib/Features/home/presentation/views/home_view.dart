@@ -5,7 +5,7 @@ import 'package:to_do/Features/home/presentation/views/profile_view.dart';
 import 'package:to_do/Features/home/presentation/views/tasks_view.dart';
 
 class HomeView extends StatefulWidget {
-  HomeView({super.key});
+  const HomeView({super.key});
 
   @override
   State<HomeView> createState() => _HomeViewState();

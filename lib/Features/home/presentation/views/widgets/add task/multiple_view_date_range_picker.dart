@@ -31,7 +31,7 @@ class MultipleViewDateRangePicker extends StatefulWidget {
   final bool autoClose;
 
   const MultipleViewDateRangePicker(
-      {Key? key,
+      {super.key,
       this.confirmText = 'Set date',
       this.cancelText = 'Cancel',
       this.startDateTitle = 'Start date',
@@ -42,8 +42,7 @@ class MultipleViewDateRangePicker extends StatefulWidget {
       this.customDateRangeButtons,
       this.radius,
       this.tabletInputFieldMaxWidth,
-      this.autoClose = true})
-      : super(key: key);
+      this.autoClose = true});
 
   @override
   State<MultipleViewDateRangePicker> createState() =>
@@ -260,7 +259,9 @@ class _MultipleViewDateRangePickerState
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.all(8),
             shrinkWrap: true,
-            itemBuilder: (context, index) {}),
+            itemBuilder: (context, index) {
+              return null;
+            }),
       );
     }
   }

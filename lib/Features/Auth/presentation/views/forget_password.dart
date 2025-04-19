@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:to_do/Features/Auth/Data/manager/forget_password_cubit/forget_password_cubit.dart';
-import 'package:to_do/Features/Auth/presentation/views/sign_up_view.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/custom_text_field.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/onboarding/presentation/views/Widgets/custom_buttom.dart';

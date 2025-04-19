@@ -7,7 +7,7 @@ import 'package:to_do/Features/home/presentation/views/widgets/edit_task.dart';
 import 'package:to_do/constants.dart';
 
 class TaskBody extends StatelessWidget {
-  TaskBody({required this.task});
+  TaskBody({super.key, required this.task});
   TaskModel task;
 
   @override
@@ -44,7 +44,6 @@ class TaskBody extends StatelessWidget {
               useSafeArea: true,
               showDragHandle: true,
               enableDrag: true,
-              // anchorPoint: Offset.zero,
               sheetAnimationStyle: AnimationStyle(
                 curve: Curves.easeInBack,
                 duration: Duration(milliseconds: 500),

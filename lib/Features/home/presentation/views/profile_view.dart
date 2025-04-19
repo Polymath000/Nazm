@@ -6,7 +6,7 @@ import 'package:to_do/Features/onboarding/presentation/views/Widgets/custom_butt
 import 'package:to_do/constants.dart';
 
 class ProfileView extends StatefulWidget {
-  ProfileView({
+  const ProfileView({
     super.key,
   });
 
@@ -44,8 +44,8 @@ class _ProfileViewState extends State<ProfileView> {
               child: CircleAvatar(
                 maxRadius: 75,
                 backgroundImage: _imageController.selectedImage != null
-                  ? FileImage(_imageController.selectedImage!)
-                  : AssetImage(userImage) as ImageProvider,
+                    ? FileImage(_imageController.selectedImage!)
+                    : AssetImage(userImage) as ImageProvider,
               ),
             ),
             const SizedBox(

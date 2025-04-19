@@ -11,7 +11,7 @@ Future<void> ShowDialog({
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      content: Container(
+      content: SizedBox(
         width: 300,
         height: 300,
         child: SfDateRangePicker(

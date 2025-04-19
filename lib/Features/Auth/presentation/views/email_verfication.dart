@@ -7,7 +7,7 @@ import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dar
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 
 class EmailVerification extends StatelessWidget {
-  EmailVerification({super.key});
+  const EmailVerification({super.key});
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -17,7 +17,7 @@ class EmailVerification extends StatelessWidget {
           listener: (context, state) {
             if (state is EmailVerificationSuccess) {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) =>  HomeView(),
+                builder: (context) => HomeView(),
               ));
               ShowSnakBar(context, "Success");
             } else if (state is EmailVerificationFailure) {

@@ -1,3 +1,3 @@
-library flutter_date_range_picker;
+library;
 
 export 'package:intl/intl.dart';

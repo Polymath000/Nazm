@@ -10,8 +10,6 @@ import 'package:to_do/Features/Auth/presentation/views/widgets/password_text_fie
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 import 'package:to_do/constants.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -131,6 +129,8 @@ class _SignUpViewState extends State<SignUpView> {
                           MainCustomButtom(
                             text: 'Sign Up',
                             onPressed: () {
+                              isGuest = false;
+
                               if (formKey.currentState!.validate()) {
                                 BlocProvider.of<SignupCubit>(context)
                                     .createNewUser(

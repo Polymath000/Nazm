@@ -104,6 +104,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      isGuest = false;
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -124,6 +125,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           GestureDetector(
             onTap: () {
+              isGuest = true;
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
