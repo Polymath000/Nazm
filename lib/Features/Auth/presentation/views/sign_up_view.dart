@@ -1,4 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -36,7 +37,7 @@ class _SignUpViewState extends State<SignUpView> {
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(
-                'assets/images/back4.jpeg',
+                'assets/images/back6.jpg',
               ),
               fit: BoxFit.cover,
             ),
@@ -101,9 +102,7 @@ class _SignUpViewState extends State<SignUpView> {
                             height: 40,
                           ),
                           CustomTextField(
-                            // TODO : add username to database
                             hintText: 'Full Name',
-
                             onChanged: (String Name) {
                               userName = Name;
                             },
@@ -128,9 +127,10 @@ class _SignUpViewState extends State<SignUpView> {
                           ),
                           MainCustomButtom(
                             text: 'Sign Up',
-                            onPressed: () {
-                              isGuest = false;
-
+                            onPressed: () async {
+                              setState(() {
+                                isGuest = false;
+                              });
                               if (formKey.currentState!.validate()) {
                                 BlocProvider.of<SignupCubit>(context)
                                     .createNewUser(
@@ -140,8 +140,18 @@ class _SignUpViewState extends State<SignUpView> {
                                   confirmPassword: confirmPassword!,
                                 );
                               }
+                              CollectionReference newUser =
+                                  await FirebaseFirestore.instance.collection(
+                                      email ?? "No Email Addrees Found !");
+                              newUser
+                                  .doc("start")
+                                  .set({"Title": "Hello from abdo"});
+                              await newUser.doc("start").delete();
+                              emailOfUser = email ?? "";
                               isLoading = false;
-                              setState(() {});
+                              setState(() {
+                                isLoading = false;
+                              });
                             },
                           ),
                           const SizedBox(
@@ -152,7 +162,8 @@ class _SignUpViewState extends State<SignUpView> {
                             children: [
                               const Text(
                                 'Already have an account? ',
-                                style: TextStyle(color: Colors.black87),
+                                style: TextStyle(
+                                    color: Color.fromARGB(221, 255, 255, 255)),
                               ),
                               GestureDetector(
                                 onTap: () {

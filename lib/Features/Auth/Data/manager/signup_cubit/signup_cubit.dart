@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:to_do/constants.dart';
 
 part 'signup_state.dart';
 
@@ -66,6 +67,8 @@ class SignupCubit extends Cubit<SignupState> {
     }
   }
 
+  late String googleAccount;
+
   Future<void> signInWithGoogle() async {
     emit(SignupLoading());
     try {
@@ -75,6 +78,7 @@ class SignupCubit extends Cubit<SignupState> {
         return;
       }
       // print(googleUser.email);
+      googleAccount = googleUser.email;
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -92,11 +96,30 @@ class SignupCubit extends Cubit<SignupState> {
     } finally {
       emit(SignupInitial());
     }
+  }
 
+  Future<void> deleteAccount() async {
+    try {
+      emit(SignupLoading());
+
+      await FirebaseAuth.instance.currentUser!.delete();
+      emit(SignupSuccess());
+    } on FirebaseAuthException catch (e) {
+      SignupFailure(errorMessage: e.toString());
+
+      if (e.code == "requires-recent-login") {
+        SignupFailure(errorMessage: "requires-recent-login");
+      } else {
+        SignupFailure(errorMessage: "try again later");
+      }
+    } catch (e) {
+      SignupFailure(errorMessage: e.toString());
+    }
   }
 
   Future<void> signOut() async {
     try {
+      emailOfUser = "";
       emit(SignupLoading());
       FirebaseAuth.instance.signOut();
       emit(SignupSuccess());

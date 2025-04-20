@@ -34,7 +34,7 @@ class CustomTextField extends StatelessWidget {
           helperStyle: TextStyle(color: color),
           labelStyle: TextStyle(
             color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
+                ? const Color.fromARGB(255, 0, 0, 0)
                 : Colors.white,
           ),
           floatingLabelStyle: TextStyle(color: color),

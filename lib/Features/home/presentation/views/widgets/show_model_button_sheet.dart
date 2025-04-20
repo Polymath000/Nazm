@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/loading_progress_h_u_d.dart';
@@ -21,6 +23,36 @@ class _ShowModelButtonSheetState extends State<ShowModelButtonSheet> {
         BlocProvider(create: (context) => AddTaskCubit()),
         BlocProvider(create: (context) => TaskCubit()),
       ],
+      child: _ShowModelButtonSheetContent(date: widget.date),
+    );
+  }
+}
+
+class _ShowModelButtonSheetContent extends StatefulWidget {
+  _ShowModelButtonSheetContent({required this.date});
+  final DateTime date;
+
+  @override
+  State<_ShowModelButtonSheetContent> createState() =>
+      _ShowModelButtonSheetContentState();
+}
+
+class _ShowModelButtonSheetContentState
+    extends State<_ShowModelButtonSheetContent> {
+  bool isSaving = false;
+
+  void returnSavingvariableFromAddTaskForm(bool data) {
+    setState(() {
+      isSaving = data;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        return !isSaving;
+      },
       child: BlocListener<AddTaskCubit, AddTaskState>(
         listener: (context, state) {
           if (state is AddTaskSuccess) {
@@ -34,8 +66,12 @@ class _ShowModelButtonSheetState extends State<ShowModelButtonSheet> {
           builder: (context, state) {
             return LoadingProgressHUD(
               isLoading: state is AddTaskLoading,
-              child: AddTaskForm(
-                date: widget.date,
+              child: AbsorbPointer(
+                absorbing: state is AddTaskLoading,
+                child: AddTaskForm(
+                  date: widget.date,
+                  updateSavingvariable: returnSavingvariableFromAddTaskForm,
+                ),
               ),
             );
           },

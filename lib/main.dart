@@ -19,7 +19,6 @@ void main() async {
   Hive.registerAdapter(TaskModelAdapter());
 
   await Hive.openBox<TaskModel>(kTaskBox);
-
   runApp(MainApp(
     savedThemeMode: savedThemeMode,
   ));

@@ -39,4 +39,5 @@ bool isOverdue(TaskModel Task) {
   return re;
 }
 
+String emailOfUser = "";
 bool isGuest = false;

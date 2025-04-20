@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:to_do/Features/home/data/cubit/add_task/add_task_cubit.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
@@ -8,8 +10,10 @@ import 'package:to_do/Features/home/presentation/views/widgets/priority.dart';
 import 'package:to_do/constants.dart';
 
 class AddTaskForm extends StatefulWidget {
-  AddTaskForm({super.key, required this.date});
+  AddTaskForm(
+      {super.key, required this.date, required this.updateSavingvariable});
   DateTime date;
+  final Function(bool) updateSavingvariable;
   @override
   State<AddTaskForm> createState() => _AddTaskFormState();
 }
@@ -40,7 +44,8 @@ class _AddTaskFormState extends State<AddTaskForm> {
     }
   }
 
-  // FireStore
+  bool isSaving = false;
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -155,11 +160,13 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     color: getPriorityColor(),
                   ),
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      setState(() {
+                        isSaving = true;
+                        widget.updateSavingvariable(isSaving);
+                      });
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
-                        print(
-                            'date................................................................: ${widget.date}');
                         var task = TaskModel(
                           firstDate: widget.date.toString(),
                           priority: priority,
@@ -167,6 +174,21 @@ class _AddTaskFormState extends State<AddTaskForm> {
                           description: description,
                           isDone: false,
                         );
+                        final bool isConnected = await InternetConnectionChecker
+                            .instance.hasConnection;
+                        if (isConnected && emailOfUser.isNotEmpty) {
+                          CollectionReference newTask =
+                              FirebaseFirestore.instance.collection(
+                                  emailOfUser ?? "No Email Addrees Found !");
+                          newTask.doc(title + widget.date.toString()).set({
+                            "Title": title,
+                            "firstDate": widget.date.toString(),
+                            "description": description,
+                            "isDone": false,
+                            "priority": priority,
+                          });
+                        }
+
                         BlocProvider.of<AddTaskCubit>(context).addTask(task);
                         BlocProvider.of<TaskCubit>(context).fetchAllTasks();
                       } else {
@@ -174,11 +196,13 @@ class _AddTaskFormState extends State<AddTaskForm> {
                           autoValidate = AutovalidateMode.always;
                         });
                       }
+                      setState(() {
+                        isSaving = false;
+                      });
                     },
-                    icon: Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Color(kPrimaryColor),
-                    ),
+                    icon: isSaving
+                        ? const CircularProgressIndicator()
+                        : const Icon(Icons.arrow_forward_rounded),
                   ),
                 ],
               ),

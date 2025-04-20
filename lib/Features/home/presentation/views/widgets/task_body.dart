@@ -1,19 +1,32 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/ViewsInTasksViews/task_row.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/edit_task.dart';
 import 'package:to_do/constants.dart';
 
-class TaskBody extends StatelessWidget {
+class TaskBody extends StatefulWidget {
   TaskBody({super.key, required this.task});
   TaskModel task;
 
   @override
+  State<TaskBody> createState() => _TaskBodyState();
+}
+
+class _TaskBodyState extends State<TaskBody> {
+  bool _isDismissed = false;
+
+  @override
   Widget build(BuildContext context) {
+    if (_isDismissed) {
+      return const SizedBox.shrink();
+    }
+
     return Dismissible(
-      key: ValueKey(task),
+      key: ValueKey(widget.task),
       background: Container(
         alignment: Alignment.centerRight,
         width: MediaQuery.of(context).size.width / 1.1,
@@ -30,9 +43,24 @@ class TaskBody extends StatelessWidget {
         ),
       ),
       direction: DismissDirection.endToStart,
-      onDismissed: (direction) {
-        task.delete();
-        BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+      onDismissed: (direction) async {
+        setState(() {
+          _isDismissed = true;
+        });
+        final bool isConnected =
+            await InternetConnectionChecker.instance.hasConnection;
+
+        if (isConnected && emailOfUser.isNotEmpty) {
+          CollectionReference collection =
+              FirebaseFirestore.instance.collection(emailOfUser);
+          await collection
+              .doc(widget.task.title + widget.task.firstDate)
+              .delete();
+        }
+        widget.task.delete();
+        if (mounted) {
+          BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+        }
       },
       child: BlocProvider(
         create: (context) => TaskCubit(),
@@ -50,7 +78,7 @@ class TaskBody extends StatelessWidget {
               ),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
-              builder: (context) => EditTask(task: task),
+              builder: (context) => EditTask(task: widget.task),
             );
           },
           child: Container(
@@ -62,7 +90,7 @@ class TaskBody extends StatelessWidget {
                   ? Color(0xFF2C2C2E)
                   : Colors.white,
               border: Border.all(
-                  color: isOverdue(task) && !task.isDone
+                  color: isOverdue(widget.task) && !widget.task.isDone
                       ? Color(0xFFE57373)
                       : Theme.of(context).brightness == Brightness.dark
                           ? Color(0xFF3E3E41)
@@ -82,7 +110,7 @@ class TaskBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TaskRow(task: task),
+                TaskRow(task: widget.task),
                 Padding(
                   padding: const EdgeInsets.only(left: 58),
                   child: Row(
@@ -94,7 +122,7 @@ class TaskBody extends StatelessWidget {
                               : Colors.grey.shade600),
                       const SizedBox(width: 4),
                       Text(
-                        task.firstDate.split(' ')[0],
+                        widget.task.firstDate.split(' ')[0],
                         style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(context).brightness == Brightness.dark

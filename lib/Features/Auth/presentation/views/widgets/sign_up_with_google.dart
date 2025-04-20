@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/Data/manager/signup_cubit/signup_cubit.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
+import 'package:to_do/constants.dart';
 
 class SignUpWithGoogle extends StatefulWidget {
   const SignUpWithGoogle({
@@ -31,7 +33,7 @@ class _SignUpWithGoogleState extends State<SignUpWithGoogle> {
                 MaterialPageRoute(
                   builder: (context) => HomeView(),
                 ));
-            ShowSnakBar(context, "I hope you enjoy our app.");
+            ShowSnakBar(context, "enjoy.");
           } else if (state is SignupFailure) {
             ShowSnakBar(context, state.errorMessage);
           } else if (state is SignupLoading) {
@@ -58,6 +60,13 @@ class _SignUpWithGoogleState extends State<SignUpWithGoogle> {
                 padding: const EdgeInsets.all(0),
               ),
               onPressed: () async {
+                CollectionReference newUser = await FirebaseFirestore.instance
+                    .collection(
+                        BlocProvider.of<SignupCubit>(context).googleAccount);
+                newUser.doc("start").set({"Title": "Hello from abdo"});
+                await newUser.doc("start").delete();
+                emailOfUser =
+                    BlocProvider.of<SignupCubit>(context).googleAccount ?? "";
                 BlocProvider.of<SignupCubit>(context).signInWithGoogle();
               },
               child: const Row(

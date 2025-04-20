@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/add%20task/sample_date_picker.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/priority.dart';
+import 'package:to_do/constants.dart';
 
 class EditTask extends StatefulWidget {
   const EditTask({super.key, required this.task});
@@ -23,12 +26,12 @@ class _EditTaskState extends State<EditTask> {
   final GlobalKey<FormState> formKey = GlobalKey();
   AutovalidateMode autoValidate = AutovalidateMode.disabled;
 
-  // Add TextEditing Controllers
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
 
   bool _isSaving = false;
-
+  late String oldTitle;
+  late String oldFirstDate;
   @override
   void initState() {
     super.initState();
@@ -38,8 +41,8 @@ class _EditTaskState extends State<EditTask> {
     isCompleted = widget.task.isDone;
     title = widget.task.title;
     descriptionIsVisible = widget.task.description.isNotEmpty;
-
-    // Initialize controllers
+    oldTitle = widget.task.title;
+    oldFirstDate = widget.task.firstDate.toString();
     _titleController = TextEditingController(text: title);
     _descriptionController = TextEditingController(text: description);
   }
@@ -53,7 +56,6 @@ class _EditTaskState extends State<EditTask> {
 
   Future<void> _saveTask() async {
     if (_isSaving) return;
-
     setState(() {
       _isSaving = true;
     });
@@ -65,6 +67,7 @@ class _EditTaskState extends State<EditTask> {
         });
         return;
       }
+      print("old Title = ${oldTitle} , old Date = ${oldFirstDate}");
       formKey.currentState!.save();
       widget.task.isDone = isCompleted;
       widget.task.firstDate = firstDate;
@@ -72,6 +75,22 @@ class _EditTaskState extends State<EditTask> {
       widget.task.title = title;
       widget.task.description = description;
       await widget.task.save();
+
+      final bool isConnected =
+          await InternetConnectionChecker.instance.hasConnection;
+
+      if (isConnected && emailOfUser.isNotEmpty) {
+        CollectionReference collection =
+            FirebaseFirestore.instance.collection(emailOfUser);
+        await collection.doc(oldTitle + oldFirstDate).delete();
+        collection.doc(title + firstDate.toString()).set({
+          "Title": oldTitle,
+          "firstDate": firstDate.toString(),
+          "description": description,
+          "isDone": isCompleted,
+          "priority": priority,
+        });
+      }
 
       Navigator.pop(context);
 
@@ -81,12 +100,6 @@ class _EditTaskState extends State<EditTask> {
       );
     } catch (e) {
       if (!mounted) return;
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text('Error updating task: $e'),
-      //     backgroundColor: Colors.red,
-      //   ),
-      // );
     } finally {
       if (mounted) {
         setState(() {

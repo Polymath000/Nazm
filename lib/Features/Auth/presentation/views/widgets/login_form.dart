@@ -8,7 +8,6 @@ import 'package:to_do/Features/Auth/presentation/views/widgets/custom_text_field
 import 'package:to_do/Features/Auth/presentation/views/widgets/main_custom_buttom.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/or_divider.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/password_text_field.dart';
-import 'package:to_do/Features/Auth/presentation/views/widgets/sign_up_with_facebook.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/sign_up_with_google.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 import 'package:to_do/constants.dart';
@@ -61,6 +60,9 @@ class _LoginFormState extends State<LoginForm> {
             text: 'Log In',
             onPressed: () {
               if (formKey.currentState!.validate()) {
+                emailOfUser = email ?? "";
+                // Download tasks from firebase
+
                 BlocProvider.of<LoginCubit>(context).signInWithEmailAndPassword(
                     email: email!, password: password!);
               }
@@ -71,10 +73,10 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const OrDivider(),
           const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // TODO: Fix the problem of this option
               SignUpWithGoogle(),
-              SignUpWithFacebook(),
             ],
           ),
           const SizedBox(
@@ -100,7 +102,7 @@ class _LoginFormState extends State<LoginForm> {
                 children: [
                   const Text(
                     'Don\'t have an account? ',
-                    style: TextStyle(color: Color.fromARGB(255, 54, 41, 41)),
+                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -126,6 +128,7 @@ class _LoginFormState extends State<LoginForm> {
           GestureDetector(
             onTap: () {
               isGuest = true;
+              emailOfUser = "";
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(

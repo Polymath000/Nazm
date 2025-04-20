@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
 import 'package:to_do/Features/home/data/task_model.dart';
+import 'package:to_do/constants.dart';
 
 class TaskRow extends StatefulWidget {
   TaskRow({super.key, required this.task});
@@ -75,13 +78,30 @@ class _TaskRowState extends State<TaskRow> {
       isCompleted = !isCompleted;
       widget.task.isDone = isCompleted;
     });
+    final bool isConnected =
+        await InternetConnectionChecker.instance.hasConnection;
 
+    if (isConnected && emailOfUser.isNotEmpty) {
+      CollectionReference collection =
+          FirebaseFirestore.instance.collection(emailOfUser);
+      await collection.doc(widget.task.title + widget.task.firstDate).delete();
+      collection.doc(widget.task.title + widget.task.firstDate.toString()).set({
+        "Title": widget.task.title,
+        "firstDate": widget.task.firstDate.toString(),
+        "description": widget.task.description,
+        "isDone": isCompleted,
+        "priority": widget.task.priority,
+      });
+    }
     try {
       await widget.task.save();
-      Future.delayed(const Duration(seconds: 1), () {
-        _taskCubit?.fetchAllTasks();
-        print('Tasks fetched: ${_taskCubit?.tasks}');
-      });
+      if (mounted) {
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted && _taskCubit != null) {
+            _taskCubit?.fetchAllTasks();
+          }
+        });
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
