@@ -78,21 +78,6 @@ class _TaskRowState extends State<TaskRow> {
       isCompleted = !isCompleted;
       widget.task.isDone = isCompleted;
     });
-    final bool isConnected =
-        await InternetConnectionChecker.instance.hasConnection;
-
-    if (isConnected && emailOfUser.isNotEmpty) {
-      CollectionReference collection =
-          FirebaseFirestore.instance.collection(emailOfUser);
-      await collection.doc(widget.task.title + widget.task.firstDate).delete();
-      collection.doc(widget.task.title + widget.task.firstDate.toString()).set({
-        "Title": widget.task.title,
-        "firstDate": widget.task.firstDate.toString(),
-        "description": widget.task.description,
-        "isDone": isCompleted,
-        "priority": widget.task.priority,
-      });
-    }
     try {
       await widget.task.save();
       if (mounted) {
@@ -111,6 +96,21 @@ class _TaskRowState extends State<TaskRow> {
           ),
         );
       }
+    }
+    final bool isConnected =
+        await InternetConnectionChecker.instance.hasConnection;
+
+    if (isConnected && emailOfUser.isNotEmpty) {
+      CollectionReference collection =
+          FirebaseFirestore.instance.collection(emailOfUser);
+      await collection.doc(widget.task.title + widget.task.firstDate).delete();
+      collection.doc(widget.task.title + widget.task.firstDate.toString()).set({
+        "Title": widget.task.title,
+        "firstDate": widget.task.firstDate.toString(),
+        "description": widget.task.description,
+        "isDone": isCompleted,
+        "priority": widget.task.priority,
+      });
     }
   }
 

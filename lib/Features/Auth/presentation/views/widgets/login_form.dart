@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,8 @@ import 'package:to_do/Features/Auth/presentation/views/widgets/main_custom_butto
 import 'package:to_do/Features/Auth/presentation/views/widgets/or_divider.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/password_text_field.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/sign_up_with_google.dart';
+import 'package:to_do/Features/home/data/cubit/add_task/add_task_cubit.dart';
+import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 import 'package:to_do/constants.dart';
 
@@ -49,20 +52,42 @@ class _LoginFormState extends State<LoginForm> {
             onChanged: (String Email) {
               email = Email;
             },
+            label: 'Email',
+            validatorRequired: true,
           ),
           PasswordTextField(
             hintText: 'Password',
             onChanged: (String Password) {
               password = Password;
             },
+            label: 'password',
           ),
           MainCustomButtom(
             text: 'Log In',
-            onPressed: () {
+            onPressed: () async {
               if (formKey.currentState!.validate()) {
                 emailOfUser = email ?? "";
-                // Download tasks from firebase
 
+                CollectionReference collection =
+                    FirebaseFirestore.instance.collection(emailOfUser);
+
+                var snapshots = await collection.get();
+                for (var doc in snapshots.docs) {
+                  Map<String, dynamic> data = {};
+                  await doc.reference.get().then((DocumentSnapshot doc) {
+                    data.addAll(doc.data() as Map<String, dynamic>);
+                  });
+
+                  TaskModel task;
+                  task = TaskModel(
+                    title: data['Title'] ?? '',
+                    description: data['description'] ?? '',
+                    isDone: data['isDone'] ?? false,
+                    firstDate: data['firstDate'] ?? DateTime.now().toString(),
+                    priority: data['priority'] ?? kPrimaryPriority,
+                  );
+                  BlocProvider.of<AddTaskCubit>(context).addTask(task);
+                }
                 BlocProvider.of<LoginCubit>(context).signInWithEmailAndPassword(
                     email: email!, password: password!);
               }
@@ -76,6 +101,7 @@ class _LoginFormState extends State<LoginForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // TODO: Fix the problem of this option
+
               SignUpWithGoogle(),
             ],
           ),

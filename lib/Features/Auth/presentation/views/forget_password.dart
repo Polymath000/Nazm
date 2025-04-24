@@ -89,11 +89,12 @@ class ForgetPassword extends StatelessWidget {
                               height: 30,
                             ),
                             CustomTextField(
-                              color: Colors.white,
                               hintText: 'Email',
                               onChanged: (String Email) {
                                 email = Email;
                               },
+                              label: 'Email',
+                              validatorRequired: true,
                             ),
                             CustomButtom(
                               text: "Send",

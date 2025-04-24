@@ -4,6 +4,7 @@ import 'package:to_do/Features/Auth/Data/manager/login_cubit/login_cubit.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/loading_progress_h_u_d.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/login_form.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
+import 'package:to_do/Features/home/data/cubit/add_task/add_task_cubit.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 
 class LogInView extends StatelessWidget {
@@ -52,7 +53,10 @@ class LogInView extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SingleChildScrollView(
-                    child: LoginForm(),
+                    child: BlocProvider(
+                      create: (context) => AddTaskCubit(),
+                      child: LoginForm(),
+                    ),
                   ),
                 ),
               );

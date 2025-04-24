@@ -16,7 +16,7 @@ class CalenderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 2,
+      height: MediaQuery.of(context).size.height / 1.2,
       child: SfCalendar(
         view: index == 1 ? CalendarView.week : CalendarView.month,
         dataSource: MeetingDataSource(_getDataSource(context, today)),

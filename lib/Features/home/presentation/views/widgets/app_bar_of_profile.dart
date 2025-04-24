@@ -18,10 +18,6 @@ class AppBarOfProfile extends StatelessWidget {
           ),
           const Spacer(),
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_none),
-          ),
-          IconButton(
             onPressed: () {
               Navigator.push(
                   context,

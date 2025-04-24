@@ -29,7 +29,7 @@ class _ShowModelButtonSheetState extends State<ShowModelButtonSheet> {
 }
 
 class _ShowModelButtonSheetContent extends StatefulWidget {
-  _ShowModelButtonSheetContent({required this.date});
+  const _ShowModelButtonSheetContent({required this.date});
   final DateTime date;
 
   @override
@@ -64,15 +64,23 @@ class _ShowModelButtonSheetContentState
         },
         child: BlocBuilder<AddTaskCubit, AddTaskState>(
           builder: (context, state) {
-            return LoadingProgressHUD(
-              isLoading: state is AddTaskLoading,
-              child: AbsorbPointer(
-                absorbing: state is AddTaskLoading,
-                child: AddTaskForm(
-                  date: widget.date,
-                  updateSavingvariable: returnSavingvariableFromAddTaskForm,
+            return Stack(
+              children: [
+                AbsorbPointer(
+                  absorbing: state is AddTaskLoading || isSaving,
+                  child: AddTaskForm(
+                    date: widget.date,
+                    updateSavingvariable: returnSavingvariableFromAddTaskForm,
+                  ),
                 ),
-              ),
+                if (state is AddTaskLoading || isSaving)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: const Center(),
+                    ),
+                  ),
+              ],
             );
           },
         ),

@@ -15,13 +15,26 @@ Future<void> ShowDialog({
         width: 300,
         height: 300,
         child: SfDateRangePicker(
-          onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-            if (args.value is DateTime) {
-              print("Selected date: ${args.value}");
-              onDateSelected(args.value.toString());
+          showNavigationArrow: true,
+          showActionButtons: true,
+          allowViewNavigation: true,
+          cancelText: "Cancel",
+          onCancel: () {
+            Navigator.pop(context);
+          },
+          onSubmit: (p0) {
+            if (p0 is DateTime) {
+              String YMD = p0.toString().split(' ')[0];
+              String HMS = DateTime.now().toString().split(' ')[1];
+              p0 = '$YMD $HMS';
+
+              onDateSelected(p0.toString());
+              print("Selected date: $p0");
+
               Navigator.pop(context);
             }
           },
+          onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {},
           selectionMode: DateRangePickerSelectionMode.single,
           initialSelectedDate: startDateSelected,
           selectionColor: isDarkMode ? Colors.tealAccent : Colors.teal,

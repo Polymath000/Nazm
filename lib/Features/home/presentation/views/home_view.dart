@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do/Features/home/presentation/views/calender_view.dart';
-import 'package:to_do/Features/home/presentation/views/profile_view.dart';
 import 'package:to_do/Features/home/presentation/views/tasks_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -13,7 +12,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   bool isLoading = false;
-  int index = 1;
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +44,7 @@ class _HomeViewState extends State<HomeView> {
         items: const [
           Icon(Icons.calendar_month, size: 20, color: Colors.black),
           Icon(Icons.task_alt, size: 20, color: Colors.black),
-          Icon(Icons.person, size: 20, color: Colors.black),
+          // Icon(Icons.person, size: 20, color: Colors.black),
         ],
       ),
     );
@@ -55,10 +54,10 @@ class _HomeViewState extends State<HomeView> {
     switch (index) {
       case 0:
         return const CalenderView();
-      case 1:
-        return const TasksView();
       default:
-        return ProfileView();
+        return const TasksView();
+      // default:
+      //   return ProfileView();
     }
   }
 }

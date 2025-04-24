@@ -18,6 +18,10 @@ class LoginCubit extends Cubit<LoginState> {
         email: email,
         password: password,
       );
+      print(FirebaseAuth.instance.currentUser);
+      // TODO: Verfied Email here
+      // FirebaseAuth.instance.currentUser!.sendEmailVerification();
+
       emit(LoginSuccess());
     } on FirebaseAuthException catch (e) {
       print("FirebaseAuthException SignIn => ${e.toString()} ");

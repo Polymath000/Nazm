@@ -9,6 +9,8 @@ import 'package:to_do/Features/Auth/presentation/views/widgets/main_custom_butto
 import 'package:to_do/Features/Auth/presentation/views/widgets/custom_text_field.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/password_text_field.dart';
 import 'package:to_do/Features/Auth/presentation/views/widgets/show_snak_bar.dart';
+import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
+import 'package:to_do/Features/home/data/task_model.dart';
 import 'package:to_do/Features/home/presentation/views/home_view.dart';
 import 'package:to_do/constants.dart';
 
@@ -30,8 +32,13 @@ class _SignUpViewState extends State<SignUpView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SignupCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => SignupCubit(),
+        ),
+        BlocProvider(create: (context) => TaskCubit())
+      ],
       child: Stack(children: [
         Container(
           decoration: BoxDecoration(
@@ -106,20 +113,26 @@ class _SignUpViewState extends State<SignUpView> {
                             onChanged: (String Name) {
                               userName = Name;
                             },
+                            label: 'Name',
+                            validatorRequired: false,
                           ),
                           CustomTextField(
                             hintText: 'Email Address',
                             onChanged: (String Email) {
                               email = Email;
                             },
+                            label: 'Email',
+                            validatorRequired: true,
                           ),
                           PasswordTextField(
+                            label: 'password',
                             hintText: 'Password',
                             onChanged: (String Password) {
                               password = Password;
                             },
                           ),
                           PasswordTextField(
+                            label: 'password',
                             hintText: 'Confirm Password',
                             onChanged: (String Confirm_Password) {
                               confirmPassword = Confirm_Password;
@@ -128,9 +141,6 @@ class _SignUpViewState extends State<SignUpView> {
                           MainCustomButtom(
                             text: 'Sign Up',
                             onPressed: () async {
-                              setState(() {
-                                isGuest = false;
-                              });
                               if (formKey.currentState!.validate()) {
                                 BlocProvider.of<SignupCubit>(context)
                                     .createNewUser(
@@ -140,16 +150,31 @@ class _SignUpViewState extends State<SignUpView> {
                                   confirmPassword: confirmPassword!,
                                 );
                               }
-                              CollectionReference newUser =
-                                  await FirebaseFirestore.instance.collection(
-                                      email ?? "No Email Addrees Found !");
-                              newUser
-                                  .doc("start")
-                                  .set({"Title": "Hello from abdo"});
+                              CollectionReference newUser = FirebaseFirestore
+                                  .instance
+                                  .collection(email ?? "");
+                              newUser.doc("start").set({"Title": "Hello"});
                               await newUser.doc("start").delete();
-                              emailOfUser = email ?? "";
-                              isLoading = false;
+                              emailOfUser = email!;
+                              if (isGuest) {
+                                List<TaskModel> tasks =
+                                    BlocProvider.of<TaskCubit>(context)
+                                        .fetchAllTasks();
+                                for (var task in tasks) {
+                                  newUser
+                                      .doc(task.title +
+                                          task.firstDate.toString())
+                                      .set({
+                                    "Title": task.title,
+                                    "firstDate": task.firstDate.toString(),
+                                    "description": task.description,
+                                    "isDone": task.isDone,
+                                    "priority": task.priority,
+                                  });
+                                }
+                              }
                               setState(() {
+                                isGuest = false;
                                 isLoading = false;
                               });
                             },
@@ -157,24 +182,28 @@ class _SignUpViewState extends State<SignUpView> {
                           const SizedBox(
                             height: 16,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Already have an account? ',
-                                style: TextStyle(
-                                    color: Color.fromARGB(221, 255, 255, 255)),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(
-                                  'Log in',
-                                  style: TextStyle(color: Colors.blue),
+                          Visibility(
+                            visible: !isGuest,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Already have an account? ',
+                                  style: TextStyle(
+                                      color:
+                                          Color.fromARGB(221, 255, 255, 255)),
                                 ),
-                              ),
-                            ],
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    'Log in',
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             height: 70,

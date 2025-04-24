@@ -60,7 +60,7 @@ class _SignUpWithGoogleState extends State<SignUpWithGoogle> {
                 padding: const EdgeInsets.all(0),
               ),
               onPressed: () async {
-                CollectionReference newUser = await FirebaseFirestore.instance
+                CollectionReference newUser = FirebaseFirestore.instance
                     .collection(
                         BlocProvider.of<SignupCubit>(context).googleAccount);
                 newUser.doc("start").set({"Title": "Hello from abdo"});

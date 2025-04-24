@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:to_do/Features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:to_do/firebase_options.dart';
-import 'Features/home/presentation/views/tasks_view.dart';
 import 'Features/home/data/task_model.dart';
 import 'constants.dart';
 

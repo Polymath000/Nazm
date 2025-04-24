@@ -67,7 +67,7 @@ class _EditTaskState extends State<EditTask> {
         });
         return;
       }
-      print("old Title = ${oldTitle} , old Date = ${oldFirstDate}");
+      print("old Title = $oldTitle , old Date = $oldFirstDate");
       formKey.currentState!.save();
       widget.task.isDone = isCompleted;
       widget.task.firstDate = firstDate;
@@ -82,10 +82,10 @@ class _EditTaskState extends State<EditTask> {
       if (isConnected && emailOfUser.isNotEmpty) {
         CollectionReference collection =
             FirebaseFirestore.instance.collection(emailOfUser);
-        await collection.doc(oldTitle + oldFirstDate).delete();
+        collection.doc(oldTitle + oldFirstDate).delete();
         collection.doc(title + firstDate.toString()).set({
-          "Title": oldTitle,
-          "firstDate": firstDate.toString(),
+          "Title": widget.task.title,
+          "firstDate": firstDate,
           "description": description,
           "isDone": isCompleted,
           "priority": priority,
@@ -93,8 +93,8 @@ class _EditTaskState extends State<EditTask> {
       }
 
       Navigator.pop(context);
+      // context.read<TaskCubit>().fetchAllTasks();
 
-      context.read<TaskCubit>().fetchAllTasks();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Task updated successfully')),
       );
@@ -128,6 +128,8 @@ class _EditTaskState extends State<EditTask> {
   }
 
   void updateDate(String fdate) {
+    print("New date selected: $fdate");
+
     setState(() {
       firstDate = fdate;
     });
@@ -153,127 +155,146 @@ class _EditTaskState extends State<EditTask> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidateMode: autoValidate,
-      key: formKey,
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.55,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(children: [
-              IconButton(
-                onPressed: _handleTaskCompletion,
-                icon: Icon(
-                  isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                  color: isCompleted
-                      ? Theme.of(context).brightness == Brightness.dark
-                          ? const Color(0xFF4CAF50)
-                          : const Color(0xFF2E7D32)
-                      : Theme.of(context).brightness == Brightness.dark
-                          ? Colors.grey.shade500
-                          : Colors.grey.shade400,
-                  size: 28,
-                ),
-              ),
-              Expanded(
-                child: TextFormField(
-                  controller: _titleController,
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return 'Title is required';
-                    }
-                    return null;
-                  },
-                  minLines: 1,
-                  maxLines: 3,
-                  autofocus: true,
-                  onSaved: (value) {
-                    title = value!;
-                  },
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black,
-                    decoration: isCompleted
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-                  ),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ]),
-            Visibility(
-              visible: descriptionIsVisible,
-              child: TextFormField(
-                controller: _descriptionController,
-                minLines: 1,
-                maxLines: 3,
-                onSaved: (value) {
-                  description = value ?? '';
-                },
-                decoration: const InputDecoration(
-                  hintText: 'Description',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  focusedBorder:
-                      OutlineInputBorder(borderSide: BorderSide.none),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                ShowDialog(
-                    context: context,
-                    onDateSelected: updateDate,
-                    startDateSelected: DateTime.parse(firstDate));
-              },
-              child: Row(
+    return Stack(
+      children: [
+        AbsorbPointer(
+          absorbing: _isSaving,
+          child: Form(
+            autovalidateMode: autoValidate,
+            key: formKey,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.55,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(width: 10),
-                  Icon(Icons.calendar_today, size: 23, color: Colors.red),
-                  const SizedBox(width: 4),
-                  Text(
-                    formatDate(
-                            DateTime.parse(firstDate), [d, '-', MM, '-', yyyy])
-                        .toString(),
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
+                  Row(children: [
+                    IconButton(
+                      onPressed: _handleTaskCompletion,
+                      icon: Icon(
+                        isCompleted
+                            ? Icons.check_circle
+                            : Icons.circle_outlined,
+                        color: isCompleted
+                            ? Theme.of(context).brightness == Brightness.dark
+                                ? const Color(0xFF4CAF50)
+                                : const Color(0xFF2E7D32)
+                            : Theme.of(context).brightness == Brightness.dark
+                                ? Colors.grey.shade500
+                                : Colors.grey.shade400,
+                        size: 28,
+                      ),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _titleController,
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) {
+                            return 'Title is required';
+                          }
+                          return null;
+                        },
+                        minLines: 1,
+                        maxLines: 3,
+                        autofocus: true,
+                        onSaved: (value) {
+                          title = value!;
+                        },
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          decoration: isCompleted
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ]),
+                  Visibility(
+                    visible: descriptionIsVisible,
+                    child: TextFormField(
+                      controller: _descriptionController,
+                      minLines: 1,
+                      maxLines: 3,
+                      onSaved: (value) {
+                        description = value ?? '';
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Description',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        focusedBorder:
+                            OutlineInputBorder(borderSide: BorderSide.none),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                     ),
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      print("-----------> ${DateTime.parse(firstDate)}");
+                      ShowDialog(
+                        context: context,
+                        startDateSelected: DateTime.parse(firstDate),
+                        onDateSelected: updateDate,
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(width: 10),
+                        Icon(Icons.calendar_today, size: 23, color: Colors.red),
+                        const SizedBox(width: 4),
+                        Text(
+                          formatDate(DateTime.parse(firstDate),
+                              [d, '-', MM, '-', yyyy]).toString(),
+                          style: TextStyle(
+                            fontSize: 20,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Priority(
+                        onPrioritySelected: updatePriority,
+                        color: getPriorityColor(),
+                      ),
+                      const SizedBox(width: 20),
+                      SizedBox(width: 120),
+                      IconButton(
+                        onPressed: _isSaving ? null : _saveTask,
+                        icon: _isSaving
+                            ? const CircularProgressIndicator()
+                            : const Icon(Icons.arrow_forward_rounded),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Priority(
-                  onPrioritySelected: updatePriority,
-                  color: getPriorityColor(),
-                ),
-                const SizedBox(width: 20),
-                SizedBox(width: 120),
-                IconButton(
-                  onPressed: _isSaving ? null : _saveTask,
-                  icon: _isSaving
-                      ? const CircularProgressIndicator()
-                      : const Icon(Icons.arrow_forward_rounded),
-                ),
-              ],
-            )
-          ],
+          ),
         ),
-      ),
+        if (_isSaving)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(),
+            ),
+          ),
+      ],
     );
   }
 }

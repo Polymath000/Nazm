@@ -31,42 +31,40 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 23.0, right: 23, top: 39),
-          child: Column(
-            children: [
-              const AppBarOfProfile(),
-              ProfileImageWidget(controller: _imageController),
-              const SizedBox(height: 30),
-              CustomTextField(
-                hintText: "Full Name",
-                onChanged: (text) {},
+      body: Padding(
+        padding: const EdgeInsets.only(left: 23.0, right: 23, top: 39),
+        child: Column(
+          children: [
+            const AppBarOfProfile(),
+            ProfileImageWidget(controller: _imageController),
+            const SizedBox(height: 30),
+            CustomTextField(
+              hintText: "Full Name",
+              onChanged: (text) {},
+              label: 'Name',
+              validatorRequired: true,
+            ),
+            Spacer(
+              flex: 4,
+            ),
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width / 1.9,
+              child: CustomButtom(
+                text: "Save",
+                onPressed: () async {
+                  if (_imageController.selectedImage != null) {
+                    await _imageController._saveImagePath(
+                      _imageController.selectedImage!.path,
+                    );
+                  }
+                  Navigator.pop(context);
+                },
               ),
-              CustomTextField(
-                hintText: "Email Address",
-                onChanged: (text) {},
-              ),
-              CustomTextField(
-                hintText: "Phone Number",
-                onChanged: (text) {},
-              ),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width / 1.9,
-                child: CustomButtom(
-                  text: "Save",
-                  onPressed: () async {
-                    if (_imageController.selectedImage != null) {
-                      await _imageController._saveImagePath(
-                        _imageController.selectedImage!.path,
-                      );
-                    }
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+            Spacer(
+              flex: 1,
+            ),
+          ],
         ),
       ),
     );

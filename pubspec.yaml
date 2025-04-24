@@ -56,12 +56,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/back4.jpeg
-    - assets/images/back7.jpeg
-    - assets/images/back3.jpeg
-    - assets/images/back2.jpg
-    - assets/images/back1.jpg
-    - assets/images/back.jpg
     - assets/images/back6.jpg
     - assets/images/
     - assets/audio/finish.mp3

@@ -8,6 +8,13 @@ part 'signup_state.dart';
 
 class SignupCubit extends Cubit<SignupState> {
   SignupCubit() : super(SignupInitial());
+
+  String UserName = "";
+
+  String getUserName() {
+    return FirebaseAuth.instance.currentUser?.displayName ?? UserName;
+  }
+
   Future<void> createNewUser(
       {required String email,
       required String password,
@@ -24,6 +31,8 @@ class SignupCubit extends Cubit<SignupState> {
             email: email,
             password: password,
           );
+          UserName = user.additionalUserInfo?.username ?? userName;
+          print("UserName ${user.additionalUserInfo?.username ?? ""}");
           emit(SignupSuccess());
         }
       } else {
@@ -106,14 +115,18 @@ class SignupCubit extends Cubit<SignupState> {
       emit(SignupSuccess());
     } on FirebaseAuthException catch (e) {
       SignupFailure(errorMessage: e.toString());
+      print(e.toString());
 
       if (e.code == "requires-recent-login") {
         SignupFailure(errorMessage: "requires-recent-login");
+        print('requires-recent-login');
       } else {
         SignupFailure(errorMessage: "try again later");
+        print('try again later');
       }
     } catch (e) {
       SignupFailure(errorMessage: e.toString());
+      print(e.toString());
     }
   }
 

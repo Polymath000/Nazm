@@ -174,12 +174,18 @@ class _AddTaskFormState extends State<AddTaskForm> {
                           description: description,
                           isDone: false,
                         );
+
+                        BlocProvider.of<AddTaskCubit>(context).addTask(task);
+                        BlocProvider.of<TaskCubit>(context).fetchAllTasks();
+                        setState(() {
+                          isSaving = false;
+                        });
                         final bool isConnected = await InternetConnectionChecker
                             .instance.hasConnection;
                         if (isConnected && emailOfUser.isNotEmpty) {
-                          CollectionReference newTask =
-                              FirebaseFirestore.instance.collection(
-                                  emailOfUser ?? "No Email Addrees Found !");
+                          CollectionReference newTask = FirebaseFirestore
+                              .instance
+                              .collection(emailOfUser);
                           newTask.doc(title + widget.date.toString()).set({
                             "Title": title,
                             "firstDate": widget.date.toString(),
@@ -188,17 +194,11 @@ class _AddTaskFormState extends State<AddTaskForm> {
                             "priority": priority,
                           });
                         }
-
-                        BlocProvider.of<AddTaskCubit>(context).addTask(task);
-                        BlocProvider.of<TaskCubit>(context).fetchAllTasks();
                       } else {
                         setState(() {
                           autoValidate = AutovalidateMode.always;
                         });
                       }
-                      setState(() {
-                        isSaving = false;
-                      });
                     },
                     icon: isSaving
                         ? const CircularProgressIndicator()
