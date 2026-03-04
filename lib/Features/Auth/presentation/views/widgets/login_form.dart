@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:to_do/Features/Auth/Data/manager/login_cubit/login_cubit.dart';
 import 'package:to_do/Features/Auth/presentation/views/forget_password.dart';
 import 'package:to_do/Features/Auth/presentation/views/sign_up_view.dart';
@@ -168,11 +167,10 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 Text(
                   'Login as guest',
-                  style: GoogleFonts.playfair(
-                      fontSize: 20,
-                      textStyle: TextStyle(
-                        color: Colors.indigo,
-                      )),
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.indigo,
+                  ),
                 ),
                 Spacer(
                   flex: 1,

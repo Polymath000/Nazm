@@ -32,7 +32,6 @@ class SignupCubit extends Cubit<SignupState> {
             password: password,
           );
           UserName = user.additionalUserInfo?.username ?? userName;
-          print("UserName ${user.additionalUserInfo?.username ?? ""}");
           emit(SignupSuccess());
         }
       } else {
@@ -62,7 +61,6 @@ class SignupCubit extends Cubit<SignupState> {
           ),
         );
       } else {
-        print('Ex from login => ${e.code}');
         emit(
           SignupFailure(
             errorMessage: e.toString().substring(30),
@@ -72,11 +70,10 @@ class SignupCubit extends Cubit<SignupState> {
     } catch (e) {
       emit(SignupFailure(
           errorMessage: "There was an error , please try again later"));
-      print('EX from SignUpCubit => ${e.toString()}');
     }
   }
 
-  late String googleAccount;
+  String googleAccount = "";
 
   Future<void> signInWithGoogle() async {
     emit(SignupLoading());
@@ -86,7 +83,6 @@ class SignupCubit extends Cubit<SignupState> {
         emit(SignupInitial());
         return;
       }
-      // print(googleUser.email);
       googleAccount = googleUser.email;
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -98,10 +94,8 @@ class SignupCubit extends Cubit<SignupState> {
       emit(SignupSuccess());
     } on FirebaseAuthException catch (error) {
       emit(SignupFailure(errorMessage: error.message ?? "An error occurred"));
-      print('Firebase exception: $error');
     } catch (error) {
       emit(SignupFailure(errorMessage: error.toString()));
-      print('Exception: $error');
     } finally {
       emit(SignupInitial());
     }
@@ -115,18 +109,14 @@ class SignupCubit extends Cubit<SignupState> {
       emit(SignupSuccess());
     } on FirebaseAuthException catch (e) {
       SignupFailure(errorMessage: e.toString());
-      print(e.toString());
 
       if (e.code == "requires-recent-login") {
         SignupFailure(errorMessage: "requires-recent-login");
-        print('requires-recent-login');
       } else {
         SignupFailure(errorMessage: "try again later");
-        print('try again later');
       }
     } catch (e) {
       SignupFailure(errorMessage: e.toString());
-      print(e.toString());
     }
   }
 

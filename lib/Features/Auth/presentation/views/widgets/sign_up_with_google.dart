@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/Data/manager/signup_cubit/signup_cubit.dart';
@@ -60,14 +59,11 @@ class _SignUpWithGoogleState extends State<SignUpWithGoogle> {
                 padding: const EdgeInsets.all(0),
               ),
               onPressed: () async {
-                CollectionReference newUser = FirebaseFirestore.instance
-                    .collection(
-                        BlocProvider.of<SignupCubit>(context).googleAccount);
-                newUser.doc("start").set({"Title": "Hello from abdo"});
-                await newUser.doc("start").delete();
-                emailOfUser =
-                    BlocProvider.of<SignupCubit>(context).googleAccount ?? "";
-                BlocProvider.of<SignupCubit>(context).signInWithGoogle();
+                await BlocProvider.of<SignupCubit>(context).signInWithGoogle();
+                if (context.mounted) {
+                  emailOfUser =
+                      BlocProvider.of<SignupCubit>(context).googleAccount;
+                }
               },
               child: const Row(
                 children: [

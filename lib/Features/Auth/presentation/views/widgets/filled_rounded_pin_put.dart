@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 
 class FilledRoundedPinPut extends StatefulWidget {
@@ -34,7 +33,7 @@ class _FilledRoundedPinPutState extends State<FilledRoundedPinPut> {
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 60,
-      textStyle: GoogleFonts.poppins(
+      textStyle: TextStyle(
         fontSize: 22,
         color: const Color.fromRGBO(30, 60, 87, 1),
       ),
