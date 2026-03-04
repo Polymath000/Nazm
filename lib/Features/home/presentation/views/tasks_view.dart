@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do/Features/Auth/Data/manager/signup_cubit/signup_cubit.dart';
 import 'package:to_do/Features/home/data/cubit/task/task_cubit.dart';
-import 'package:to_do/Features/home/presentation/views/edit_profile.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/show_model_button_sheet.dart';
 import 'package:to_do/Features/home/presentation/views/widgets/task_views_list.dart';
-import '../../../../constants.dart';
 import 'settings.dart';
 
 class TasksView extends StatefulWidget {
